@@ -15,13 +15,21 @@ from attendee import Attendee
 # Application settings
 MAX = 10
 
-if( len(sys.argv) != 3 ):
-    print( "Usage: python(3) signup_csv.py <csv_file_path> <event_url>" )
+if( len(sys.argv) < 3 ):
+    print( "Usage: python(3) signup_csv.py <csv_file_path> <event_url> [headless]" )
+    print( "\tWith 'headless', the program will run without showing the webpage in Chrome" )
     sys.exit(0)
     
     
 csv_path = sys.argv[1]
 event_url = sys.argv[2]
+
+headless = False
+
+if len(sys.argv) > 3:
+    headless = True if sys.argv[3].lower() == 'headless' else False
+     
+
 
 if not os.path.isfile(csv_path):
     sys.exit( "CVS file does not exist.")
@@ -79,7 +87,7 @@ print( "\tAttendee file:", csv_path)
 print( "\tEvent: ", event_url )
 
 
-mass_signup.signup(attendee_list, buyer, event_url)
+mass_signup.signup(attendee_list, buyer, event_url, headless )
 
 if __name__ != '__main__':
     sys.exit( "File as module not supported")

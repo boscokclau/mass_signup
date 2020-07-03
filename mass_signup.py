@@ -9,6 +9,7 @@ Created on Wed Jul  1 15:22:33 2020
 import sys
 import time
 from selenium import webdriver
+from selenium.webdriver.chrome.options import Options
 from webdriver_manager.chrome import ChromeDriverManager
 
 from buyer import Buyer
@@ -20,7 +21,7 @@ WAIT_MS = 1000
 MAX_ALLOWED = 10
 
 
-def signup( attendee_list, buyer, url ):
+def signup( attendee_list, buyer, url, headless=False ):
     '''
     Sign-up for seats.
 
@@ -51,7 +52,16 @@ def signup( attendee_list, buyer, url ):
         print( f"Request must be of less than {MAX_ALLOWED} attendees. Please break up the request to retry.")
         return 3
     
-    driver = webdriver.Chrome( ChromeDriverManager().install())
+    print( "Headless mode", "on. See console for output." if headless else "off. Enjoy the browser automation!" )
+    if not headless:
+        driver = webdriver.Chrome( ChromeDriverManager().install())
+    
+    else:
+        options = Options()
+        options.headless = True
+        driver = webdriver.Chrome( ChromeDriverManager().install(), chrome_options=options)
+    
+    
     driver.implicitly_wait( WAIT_MS )
     
     # Go to event registration main page and click "Register" to start
@@ -237,7 +247,7 @@ def main():
     
     print( "\n ================================", "\n    Executing with test data", "\n ================================ \n" )
     
-    status = signup( attendee_list=attendee_list, buyer=buyer, url=url )
+    status = signup( attendee_list=attendee_list, buyer=buyer, url=url, headless=False )
     
     sys.exit(status)
     
