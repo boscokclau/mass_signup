@@ -224,6 +224,13 @@ def signup( attendee_list, buyer, url, headless=False ):
     register_button = driver.find_element_by_xpath( f"//button[@data-spec='eds-modal__primary-button']" )
     register_button.click()
     
+    print( "Waitig for web response" )
+
+    for i in range( 10 ):
+        print( 10 - i, "second{} remaining".format( 's' if 10 - i > 1 else '' ))
+        time.sleep(1)
+    
+    
     print( "\nRegistration complete. Please check email to confirm." )
     
     return 0
