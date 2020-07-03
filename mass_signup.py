@@ -3,7 +3,7 @@
 """
 Created on Wed Jul  1 15:22:33 2020
 
-@author: boscolau
+@author: boscokclau
 """
 
 import time
