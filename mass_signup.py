@@ -11,6 +11,8 @@ import sys
 from selenium import webdriver
 from webdriver_manager.chrome import ChromeDriverManager
 
+from Buyer import Buyer
+
 
 # Application settings
 WAIT_MS = 1000
@@ -20,11 +22,17 @@ buyer_FN = "BuyerFN"
 buyer_LN = "BuyerLN"
 buyer_email = "bosco.kc.lau@gmail.com"
 
+buyer = Buyer().initWith( buyer_FN, buyer_LN, buyer_email )
+
 # Test data
 attendee_list = list()
 attendee_list.append( {"firstname": "FN_1", "lastname": "LN1", "email": "a@b.com", "phone": "1234567890", "is_volunteer": True} )
 attendee_list.append( {"firstname": "FN_2", "lastname": "LN2", "email": "a2@b2.com", "phone": "2345678901", "is_volunteer": False} )
 attendee_list.append( {"firstname": "FN_3", "lastname": "LN3", "email": "a3@b3.com", "phone": "3456789012", "is_volunteer": False} )
+
+
+### Method shoiuld start from this line.
+
 
 num_tickets = len(attendee_list)
 
@@ -94,16 +102,18 @@ register_button.click()
 """
 
 driver.find_element_by_id( 'buyer.N-first_name' ).click()
-driver.find_element_by_id( 'buyer.N-first_name' ).send_keys( buyer_FN )
+driver.find_element_by_id( 'buyer.N-first_name' ).send_keys( buyer.first_name )
 
 driver.find_element_by_id( 'buyer.N-last_name' ).click()
-driver.find_element_by_id( 'buyer.N-last_name' ).send_keys( buyer_LN )
+driver.find_element_by_id( 'buyer.N-last_name' ).send_keys( buyer.last_name )
 
 driver.find_element_by_id( 'buyer.N-email' ).click()
-driver.find_element_by_id( 'buyer.N-email' ).send_keys( buyer_email )
+driver.find_element_by_id( 'buyer.N-email' ).send_keys( buyer.email )
 
 driver.find_element_by_id( 'buyer.confirmEmailAddress' ).click()
-driver.find_element_by_id( 'buyer.confirmEmailAddress' ).send_keys( buyer_email )
+driver.find_element_by_id( 'buyer.confirmEmailAddress' ).send_keys( buyer.email )
+
+sys.exit()
 
 div_attendee_surveys = driver.find_elements_by_xpath( "//*[starts-with(@data-spec, 'checkout-form-survey-attendee-')]" )
 
