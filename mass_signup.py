@@ -38,7 +38,6 @@ def signup( attendee_list, buyer, url ):
         1 == Sold Out. No registration processed
         2 == Registration requested is more than seats available. No registration orocessed.
         3 == Registration requested is more than maximum allowed, Currently set at 10
-        4 == Attendee list is empty
 
     '''
     assert attendee_list
@@ -46,10 +45,6 @@ def signup( attendee_list, buyer, url ):
     assert url
     
     num_tickets = len(attendee_list)
-    
-    if not num_tickets:
-        print( "Attendee list cannot be empty. No registration processed." )
-        return 4
 
     # Quit if request is over MAX_ALLOWED
     if num_tickets > MAX_ALLOWED:
