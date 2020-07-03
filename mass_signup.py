@@ -15,8 +15,6 @@ from webdriver_manager.chrome import ChromeDriverManager
 # Application settings
 WAIT_MS = 1000
 
-# TODO: Read from CSV or other ways to identify event_id
-event_id = "109437173532"
 
 buyer_FN = "BuyerFN"
 buyer_LN = "BuyerLN"
@@ -36,7 +34,9 @@ driver.implicitly_wait( WAIT_MS )
 # Go to event registration main page and click "Register" to start
 # driver.get( "https://www.eventbrite.com/e/test-event-tickets-109437173532" )
 # TODO: event_id is a variable only for coding purpose. Need a way to get the event URL
-url = "https://www.eventbrite.com/e/test-event-tickets-" + event_id
+url = "https://www.eventbrite.com/e/test-event-tickets-109437173532"
+
+event_id = url.split('-')[-1]
 
 print( "Opening: ", url )
 driver.get( url )
