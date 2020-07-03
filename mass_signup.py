@@ -11,8 +11,8 @@ import time
 from selenium import webdriver
 from webdriver_manager.chrome import ChromeDriverManager
 
-from Buyer import Buyer
-from Attendee import Attendee
+from buyer import Buyer
+from attendee import Attendee
 
 
 # Application settings
