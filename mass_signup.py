@@ -17,6 +17,7 @@ from attendee import Attendee
 
 # Application settings
 WAIT_MS = 1000
+MAX_ALLOWED = 10
 
 
 def signup( attendee_list, buyer, url ):
@@ -36,9 +37,24 @@ def signup( attendee_list, buyer, url ):
         0 == Registration Done
         1 == Sold Out. No registration processed
         2 == Registration requested is more than seats available. No registration orocessed.
+        3 == Registration requested is more than maximum allowed, Currently set at 10
+        4 == Attendee list is empty
 
     '''
+    assert attendee_list
+    assert buyer
+    assert url
+    
     num_tickets = len(attendee_list)
+    
+    if not num_tickets:
+        print( "Attendee list cannot be empty. No registration processed." )
+        return 4
+
+    # Quit if request is over MAX_ALLOWED
+    if num_tickets > MAX_ALLOWED:
+        print( f"Request must be of less than {MAX_ALLOWED} attendees. Please break up the request to retry.")
+        return 3
     
     driver = webdriver.Chrome( ChromeDriverManager().install())
     driver.implicitly_wait( WAIT_MS )
