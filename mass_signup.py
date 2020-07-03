@@ -141,11 +141,12 @@ for i in range( num_attendees ):
     # EB Custom Fields
     custom_fields = driver.find_elements_by_xpath( f"//*[starts-with(@name, '{ticket_id}.U-')]" )
 
-    
+    """
     for field in custom_fields:
         print( "ID", field.get_attribute('id') )
         print( "Name", field.get_attribute('name') )
         print()
+    """
     
     
     # Phone number
