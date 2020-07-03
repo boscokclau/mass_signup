@@ -21,7 +21,7 @@ class Buyer():
     
     
     # initializers
-    def initWith( self, last_name, first_name, email ):
+    def initWith( self, first_name , last_name, email ):
         '''
         Initialize with specific values.
         
