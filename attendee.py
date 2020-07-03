@@ -49,5 +49,33 @@ class Attendee:
         
         return self
     
+    
+    def initWithCSVString( self, csvString ):
+        '''
+        Create an Attendee object given the csvString. The csvString has the following fields:
+            last_name, first_name, email, phone_number, isVolunteer (of value "Y" or "N")
+
+        Parameters
+        ----------
+        csvString : TYPE
+            DESCRIPTION.
+
+        Returns
+        -------
+        TYPE
+            DESCRIPTION.
+
+        '''
+        fields = csvString.split(',')
+        last_name = fields[0]
+        first_name = fields[1]
+        email = fields[2]
+        phone_number = fields[3]
+        is_volunteer = True if fields[4].upper() == "Y" else False
+        
+        return self.initWith( last_name, first_name, email, phone_number, is_volunteer )
+    
+    
+        
     def __str__(self):
         return str( self.__dict__ )
