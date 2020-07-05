@@ -59,7 +59,9 @@ if len( attendee_lines) > MAX + 1:
 attendee_lines.pop(0)
 
 for line in attendee_lines :
-    attendee_list.append( Attendee().initWithCSVString(line ))
+    attendee = Attendee().initWithCSVString( line )
+    # print( attendee )
+    attendee_list.append( attendee )
 
 
 """
@@ -85,6 +87,7 @@ attendee_list.append( Attendee().initWithCSVString( "Lau,Bosco,bosco.kc.lau@gmai
 print( "Processing:")
 print( "\tAttendee file:", csv_path)
 print( "\tEvent: ", event_url )
+print( )
 
 
 mass_signup.signup(attendee_list, buyer, event_url, headless )

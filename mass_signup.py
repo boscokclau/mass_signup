@@ -167,7 +167,7 @@ def signup( attendee_list, buyer, url, headless=False ):
         driver.find_element_by_id( ticket_id + '.N-last_name' ).send_keys( cur_attendee.last_name ) 
         
         driver.find_element_by_id( ticket_id + '.N-email' ).click()
-        driver.find_element_by_id( ticket_id + '.N-email' ).send_keys( cur_attendee.email )
+        driver.find_element_by_id( ticket_id + '.N-email' ).send_keys( cur_attendee.email if cur_attendee.email != None and len( cur_attendee.email ) != 0 else buyer.email )
         
     
         # EB Custom Fields
@@ -184,7 +184,7 @@ def signup( attendee_list, buyer, url, headless=False ):
         # Phone number
         phone_textbox = custom_fields[0]
         phone_textbox.click()
-        phone_textbox.send_keys( cur_attendee.phone_number )
+        phone_textbox.send_keys( cur_attendee.phone_number if cur_attendee.phone_number != None and len( cur_attendee.phone_number ) != 0 else 'NA' )
         
         # Health screening (hs)
         hs_checkbox = custom_fields[1]
