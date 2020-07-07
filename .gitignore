@@ -3,3 +3,4 @@ __pycache__
 mass_signup_ui.py
 .DS_Store
 .idea
+*.spec
