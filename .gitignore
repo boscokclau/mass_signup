@@ -1,3 +1,4 @@
 __pycache__
 *.sh
 mass_signup_ui.py
+.DS_Store
