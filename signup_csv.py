@@ -16,7 +16,7 @@ from attendee import Attendee
 MAX = 10
 
 if( len(sys.argv) < 3 ):
-    print( "Usage: python(3) signup_csv.py <csv_file_path> <event_url> [headless]" )
+    print( "Usage: python3 signup_csv.py <event_url> <csv_file_path> [headless]" )
     print( "\tWith 'headless', the program will run without showing the webpage in Chrome" )
     sys.exit(0)
     
