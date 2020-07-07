@@ -21,8 +21,8 @@ if( len(sys.argv) < 3 ):
     sys.exit(0)
     
     
-csv_path = sys.argv[1]
-event_url = sys.argv[2]
+event_url = sys.argv[1]
+csv_path = sys.argv[2]
 
 headless = False
 
@@ -32,7 +32,7 @@ if len(sys.argv) > 3:
 
 
 if not os.path.isfile(csv_path):
-    sys.exit( "CVS file does not exist.")
+    sys.exit( "csv file does not exist.")
     
     
 
