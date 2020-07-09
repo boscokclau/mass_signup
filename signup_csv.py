@@ -37,7 +37,7 @@ buyer_FN = "OLMV"
 buyer_LN = "Seattle"
 buyer_email = "olmv.seattle@gmail.com"
     
-buyer = Buyer().initWith( buyer_FN, buyer_LN, buyer_email )
+buyer = Buyer( buyer_FN, buyer_LN, buyer_email )
 
 
 attendee_list = list()
