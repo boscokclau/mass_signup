@@ -17,10 +17,10 @@ class Attendee:
 
         Parameters
         ----------
-        last_name : string
-        first_name : string
-        email : string
-        phone_number : string, optional
+        last_name : str
+        first_name : str
+        email : str
+        phone_number : str, optional
             The default is None.
         is_volunteer : boolean, optional
             The default is False.
