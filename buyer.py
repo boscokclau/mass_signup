@@ -7,7 +7,7 @@ Created on Thu Jul  2 18:04:28 2020
 """
 
 
-class Buyer():
+class Buyer:
 
     # Default constructor
     def __init__(self, first_name: str, last_name: str, email: str):
