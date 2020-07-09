@@ -8,13 +8,7 @@ Created on Thu Jul  2 18:49:57 2020
 
 
 class Attendee:
-    
-    # Data
-    last_name = None
-    first_name = None
-    email = None
-    phone_number = None
-    is_volunteer = None
+
     
     # Think of allocating memory, like objective-C [object alloc]. Let me know
     # in the comment about this pattern to implement multiple initializers
@@ -22,7 +16,7 @@ class Attendee:
         pass
     
     # initializers
-    def initWith(self, last_name, first_name, email, phone_number=None, is_volunteer=False):
+    def initWith(self, last_name: str, first_name: str, email: str, phone_number: str = None, is_volunteer: bool = False):
         '''
         Initilize with specific values
 
@@ -50,14 +44,14 @@ class Attendee:
         return self
     
     
-    def initWithCSVString( self, csvString ):
+    def initWithCSVString( self, csvString: str ):
         '''
         Create an Attendee object given the csvString. The csvString has the following fields:
             last_name, first_name, email, phone_number, isVolunteer (of value "Y" or "N")
 
         Parameters
         ----------
-        csvString : TYPE
+        csvString : str
             DESCRIPTION.
 
         Returns

@@ -9,11 +9,6 @@ Created on Thu Jul  2 18:04:28 2020
 
 class Buyer():
     
-    # Data
-    last_name = None
-    first_name = None
-    email = None
-    
     # Think of allocating memory, like objective-C [object alloc]. Let me know
     # in the comment about this pattern to implement multiple initializers
     def __init__(self):
@@ -21,7 +16,7 @@ class Buyer():
     
     
     # initializers
-    def initWith( self, first_name , last_name, email ):
+    def initWith( self, first_name: str , last_name: str, email: str ):
         '''
         Initialize with specific values.
         
