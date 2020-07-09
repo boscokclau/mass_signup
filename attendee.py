@@ -45,7 +45,7 @@ class Attendee:
 
         Returns
         -------
-        TYPE
+        Attendee
             An Attendee object created with data from csv_string.
         """
         fields = csv_string.split(',')
