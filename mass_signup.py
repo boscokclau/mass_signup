@@ -246,9 +246,9 @@ def main():
     
     
     attendee_list = list()
-    attendee_list.append( Attendee().initWith( last_name = "LN1", first_name = "FN1", email = "a1@b1.com", phone_number="1234567890", is_volunteer=True ) )
-    attendee_list.append( Attendee().initWith( last_name = "LN2", first_name = "FN2", email = "a2@b2.com", phone_number="2234567890", is_volunteer=False ) )
-    attendee_list.append( Attendee().initWith( last_name = "LN3", first_name = "FN3", email = "a3@b3.com", phone_number="3234567890", is_volunteer=True ) )
+    attendee_list.append(Attendee().from_values(last_name ="LN1", first_name ="FN1", email ="a1@b1.com", phone_number="1234567890", is_volunteer=True))
+    attendee_list.append(Attendee().from_values(last_name ="LN2", first_name ="FN2", email ="a2@b2.com", phone_number="2234567890", is_volunteer=False))
+    attendee_list.append(Attendee().from_values(last_name ="LN3", first_name ="FN3", email ="a3@b3.com", phone_number="3234567890", is_volunteer=True))
     
     url = "https://www.eventbrite.com/e/test-event-tickets-109437173532"
     

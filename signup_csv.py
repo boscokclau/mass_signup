@@ -48,35 +48,15 @@ with open( csv_path ) as f:
 
 # Check with MAX + 1 as the first line is headers
 if len( attendee_lines) > MAX + 1:
-    sys.exit( "Requests exist maximum allowed. Max = 10" )
+    sys.exit( f"Requests exist maximum allowed. Max = {MAX}" )
 
 # Remove header line=
 attendee_lines.pop(0)
 
 for line in attendee_lines :
-    attendee = Attendee().initWithCSVString( line )
+    attendee = Attendee.from_csv_string(line)
     # print( attendee )
     attendee_list.append( attendee )
-
-
-"""
-attendee_list.append( Attendee().initWith( last_name = "LN1", first_name = "FN1", email = "a1@b1.com", phone_number="1234567890", is_volunteer=True ) )
-attendee_list.append( Attendee().initWith( last_name = "LN2", first_name = "FN2", email = "a2@b2.com", phone_number="2234567890", is_volunteer=False ) )
-attendee_list.append( Attendee().initWith( last_name = "LN3", first_name = "FN3", email = "a3@b3.com", phone_number="3234567890", is_volunteer=True ) )
-"""
-
-"""
-attendee_list.append( Attendee().initWithCSVString( "Bui,Dat,hahaha8111989@gmail.com,2064654809,N" ))
-attendee_list.append( Attendee().initWithCSVString( "Chu,Tinh,ac@t.com,1234567890,N" ))
-attendee_list.append( Attendee().initWithCSVString( "Do,Amy,quang2004@gmail.com,2068538157,N" ))
-attendee_list.append( Attendee().initWithCSVString( "Do,Kim-Quy T,hanhnguyen020307@yahoo.com,206-578-3569,N" ))
-attendee_list.append( Attendee().initWithCSVString( "Do,Peter,quang2004@gmail.com,206-853-8157,N" ))
-attendee_list.append( Attendee().initWithCSVString( "Do,Quang,quang2004@gmail.com,206-853-8157,N" ))
-attendee_list.append( Attendee().initWithCSVString( "Do,Quyen,ad@q.com,206-832-5286,N" ))
-attendee_list.append( Attendee().initWithCSVString( "Duong,Maria,ad@M.com,206-468-8018,N" ))
-attendee_list.append( Attendee().initWithCSVString( "Huynh,Quang,hanhnguyen020307@yahoo.com,206-405-0719,N" ))
-attendee_list.append( Attendee().initWithCSVString( "Lau,Bosco,bosco.kc.lau@gmail.com,2066016801,Y" ))
-"""
 
 
 print( "Processing:")
