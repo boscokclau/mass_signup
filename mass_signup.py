@@ -22,7 +22,7 @@ MAX_ALLOWED = 10
 
 
 def signup( attendee_list, buyer, url, headless=False ):
-    '''
+    """
     Sign-up for seats.
 
     Parameters
@@ -39,8 +39,7 @@ def signup( attendee_list, buyer, url, headless=False ):
         1 == Sold Out. No registration processed
         2 == Registration requested is more than seats available. No registration orocessed.
         3 == Registration requested is more than maximum allowed, Currently set at 10
-
-    '''
+    """
     assert attendee_list
     assert buyer
     assert url
@@ -168,8 +167,7 @@ def signup( attendee_list, buyer, url, headless=False ):
         
         driver.find_element_by_id( ticket_id + '.N-email' ).click()
         driver.find_element_by_id( ticket_id + '.N-email' ).send_keys( cur_attendee.email if cur_attendee.email != None and len( cur_attendee.email ) != 0 else buyer.email )
-        
-    
+
         # EB Custom Fields
         custom_fields = driver.find_elements_by_xpath( f"//*[starts-with(@name, '{ticket_id}.U-')]" )
     
@@ -241,23 +239,23 @@ def main():
     buyer_FN = "BuyerFN"
     buyer_LN = "BuyerLN"
     buyer_email = "bosco.kc.lau@gmail.com"
-    
+
     buyer = Buyer().initWith( buyer_FN, buyer_LN, buyer_email )
-    
-    
+
+
     attendee_list = list()
     attendee_list.append(Attendee().from_values(last_name ="LN1", first_name ="FN1", email ="a1@b1.com", phone_number="1234567890", is_volunteer=True))
     attendee_list.append(Attendee().from_values(last_name ="LN2", first_name ="FN2", email ="a2@b2.com", phone_number="2234567890", is_volunteer=False))
     attendee_list.append(Attendee().from_values(last_name ="LN3", first_name ="FN3", email ="a3@b3.com", phone_number="3234567890", is_volunteer=True))
-    
+
     url = "https://www.eventbrite.com/e/test-event-tickets-109437173532"
-    
+
     print( "\n ================================", "\n    Executing with test data", "\n ================================ \n" )
-    
+
     status = signup( attendee_list=attendee_list, buyer=buyer, url=url, headless=False )
-    
+
     sys.exit(status)
-    
-    
+
+
 if __name__ == '__main__':
     main()

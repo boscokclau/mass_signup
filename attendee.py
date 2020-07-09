@@ -11,7 +11,7 @@ class Attendee:
 
     # Default constructor
     def __init__(self, last_name: str, first_name: str, email: str, phone_number: str = None, is_volunteer: bool = False):
-        '''
+        """
         Default constructor
 
         Parameters
@@ -23,7 +23,7 @@ class Attendee:
             The default is None.
         is_volunteer : boolean, optional
             The default is False.
-        '''
+        """
         self.last_name = last_name
         self.first_name = first_name
         self.email = email
@@ -33,7 +33,7 @@ class Attendee:
     # Constructor methods
     @classmethod
     def from_csv_string(cls, csv_string: str):
-        '''
+        """
         Create an Attendee object given the csv_string. The csv_string has the following fields:
             last_name, first_name, email, phone_number, isVolunteer (of value "Y" or "N")
 
@@ -46,7 +46,7 @@ class Attendee:
         -------
         TYPE
             An Attendee object created with data from csv_string.
-        '''
+        """
         fields = csv_string.split(',')
         last_name = fields[0]
         first_name = fields[1]
