@@ -10,7 +10,7 @@ Created on Thu Jul  2 18:04:28 2020
 class Buyer():
 
     # Default constructor
-    def __init__( self, first_name: str , last_name: str, email: str ):
+    def __init__(self, first_name: str, last_name: str, email: str):
         """
         Initialize with specific values.
 
@@ -23,6 +23,6 @@ class Buyer():
         self.last_name = last_name
         self.first_name = first_name
         self.email = email
-        
+
     def __str__(self):
-        return str( self.__dict__ )
+        return str(self.__dict__)

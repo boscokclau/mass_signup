@@ -10,7 +10,8 @@ Created on Thu Jul  2 18:49:57 2020
 class Attendee:
 
     # Default constructor
-    def __init__(self, last_name: str, first_name: str, email: str, phone_number: str = None, is_volunteer: bool = False):
+    def __init__(self, last_name: str, first_name: str, email: str, phone_number: str = None,
+                 is_volunteer: bool = False):
         """
         Default constructor
 
@@ -53,8 +54,8 @@ class Attendee:
         email = fields[2]
         phone_number = fields[3]
         is_volunteer = True if fields[4].upper() == "Y" else False
-        
+
         return cls(last_name, first_name, email, phone_number, is_volunteer)
-        
+
     def __str__(self):
-        return str( self.__dict__ )
+        return str(self.__dict__)
