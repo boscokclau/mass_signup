@@ -8,6 +8,7 @@ Created on Thu Jul  2 20:13:58 2020
 
 import os
 import sys
+import argparse
 import mass_signup
 from buyer import Buyer
 from attendee import Attendee
@@ -15,26 +16,20 @@ from attendee import Attendee
 # Application settings
 MAX = 10
 
-if( len(sys.argv) < 3 ):
-    print( "Usage: python3 signup_csv.py <event_url> <csv_file_path> [headless]" )
-    print( "\tWith 'headless', the program will run without showing the webpage in Chrome" )
-    sys.exit(0)
-    
-    
-event_url = sys.argv[1]
-csv_path = sys.argv[2]
+parser = argparse.ArgumentParser()
+parser.add_argument( 'event_url', help='URL of the EventBrite event.' )
+parser.add_argument( 'csv_path', help='File path to the attendee CSV file.' )
+parser.add_argument( '-c', '--command-line-mode', dest='headless', help='Command line mode. Run browser headless.', action='store_true' )
+args = parser.parse_args()
 
-headless = False
 
-if len(sys.argv) > 3:
-    headless = True if sys.argv[3].lower() == 'headless' else False
-     
+event_url = args.event_url
+csv_path = args.csv_path
+headless = args.headless
 
 
 if not os.path.isfile(csv_path):
     sys.exit( "csv file does not exist.")
-    
-    
 
 
 # Buyer is always the OLMV Mass EB organizer
