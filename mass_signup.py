@@ -8,6 +8,7 @@ Created on Wed Jul  1 15:22:33 2020
 
 import sys
 import time
+from constants import RegistrationStatus
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
 from webdriver_manager.chrome import ChromeDriverManager
@@ -18,7 +19,6 @@ from attendee import Attendee
 # Application settings
 WAIT_MS = 1000
 MAX_ALLOWED = 10
-
 
 def signup(attendee_list, buyer, url, headless=False):
     """
@@ -35,11 +35,7 @@ def signup(attendee_list, buyer, url, headless=False):
 
     Returns
     -------
-    int
-        0 == Registration Done
-        1 == Sold Out. No registration processed
-        2 == Registration requested is more than seats available. No registration orocessed.
-        3 == Registration requested is more than maximum allowed, Currently set at 10
+    constants.RegistrationStatus
     """
     assert attendee_list
     assert buyer
@@ -50,7 +46,7 @@ def signup(attendee_list, buyer, url, headless=False):
     # Quit if request is over MAX_ALLOWED
     if num_tickets > MAX_ALLOWED:
         print(f"Request must be of less than {MAX_ALLOWED} attendees. Please break up the request to retry.")
-        return 3
+        return RegistrationStatus.TOO_MANY_REQUESTS
 
     print("Headless mode", "on. See console for output." if headless else "off. Enjoy the browser automation!")
     if not headless:
@@ -77,7 +73,7 @@ def signup(attendee_list, buyer, url, headless=False):
 
     if status_text != 'Register':
         print("Sales has ended. No registration has been processed.")
-        return 1
+        return RegistrationStatus.SOLD_OUT
 
     # Space available. Continue
     register_button.click()
@@ -102,7 +98,7 @@ def signup(attendee_list, buyer, url, headless=False):
     if remaining_ticket < len(attendee_list):
         print(
             f"Only {remaining_ticket} remaining. Not enough for {len(attendee_list)} attendees. No registration processed.")
-        return 2
+        return RegistrationStatus.TOO_MANY_REQUESTS
 
     print("Tickets available. Proceeding...")
     quantity_dropdown = driver.find_element_by_xpath("//*[starts-with(@id, 'ticket-quantity-selector')]")
@@ -227,7 +223,7 @@ def signup(attendee_list, buyer, url, headless=False):
     order_id = driver.find_element_by_xpath(f"//h4[@data-spec='confirmation-order-id']").text
     print(f"\nRegistration complete. Order ID: {order_id}. \nPlease check email to confirm.")
 
-    return 0
+    return RegistrationStatus.COMPLETED
 
 
 def main():
