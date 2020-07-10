@@ -48,13 +48,8 @@ class Attendee:
         Attendee
             An Attendee object created with data from csv_string.
         """
-        fields = csv_string.split(',')
-        last_name = fields[0]
-        first_name = fields[1]
-        email = fields[2]
-        phone_number = fields[3]
-        is_volunteer = True if fields[4].upper() == "Y" else False
-
+        last_name, first_name, email, phone_number, is_volunteer = csv_string.split(',')
+        is_volunteer = True if is_volunteer.upper() == "Y" else False
         return cls(last_name, first_name, email, phone_number, is_volunteer)
 
     def __str__(self):
