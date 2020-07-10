@@ -19,10 +19,6 @@ MAX = 10
 
 
 def process_registration(event_url: str, csv_path: str, headless: bool = False):
-    if not os.path.isfile(csv_path):
-        print("csv file does not exist.")
-        return ProgramStatus.FILE_NOT_FOUND
-
     # Buyer is always the OLMV Mass EB organizer
     buyer_FN = "OLMV"
     buyer_LN = "Seattle"
@@ -45,7 +41,6 @@ def process_registration(event_url: str, csv_path: str, headless: bool = False):
 
     for line in attendee_lines:
         attendee = Attendee.from_csv_string(line)
-        # print( attendee )
         attendee_list.append(attendee)
 
     print("Processing:")
@@ -69,5 +64,4 @@ if __name__ == '__main__':
     csv_path = args.csv_path
     headless = args.headless
 
-    status = process_registration(event_url, csv_path, headless)
-    sys.exit(status)
+    process_registration(event_url, csv_path, headless)
