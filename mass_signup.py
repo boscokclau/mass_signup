@@ -26,10 +26,12 @@ def signup(attendee_list, buyer, url, headless=False):
 
     Parameters
     ----------
-    attenddees_list : Attendee
+    attendee_list : list of Attendee
     buyer : Buyer
     url : TYPE
-        Cannonical EB URL.
+        Canonical EB URL.
+    headless : bool
+        Run browser headless if True
 
     Returns
     -------
@@ -161,7 +163,7 @@ def signup(attendee_list, buyer, url, headless=False):
 
         driver.find_element_by_id(ticket_id + '.N-email').click()
         driver.find_element_by_id(ticket_id + '.N-email').send_keys(
-            cur_attendee.email if cur_attendee.email != None and len(cur_attendee.email) != 0 else buyer.email)
+            cur_attendee.email if cur_attendee.email is not None and len(cur_attendee.email) != 0 else buyer.email)
 
         # EB Custom Fields
         custom_fields = driver.find_elements_by_xpath(f"//*[starts-with(@name, '{ticket_id}.U-')]")
@@ -176,7 +178,7 @@ def signup(attendee_list, buyer, url, headless=False):
         # Phone number
         phone_textbox = custom_fields[0]
         phone_textbox.click()
-        phone_textbox.send_keys(cur_attendee.phone_number if cur_attendee.phone_number != None and len(
+        phone_textbox.send_keys(cur_attendee.phone_number if cur_attendee.phone_number is not None and len(
             cur_attendee.phone_number) != 0 else 'NA')
 
         # Health screening (hs)
