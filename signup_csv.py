@@ -6,11 +6,8 @@ Created on Thu Jul  2 20:13:58 2020
 @author: boscolau
 """
 
-import os
-import sys
 import argparse
 import mass_signup
-from constants import ProgramStatus
 from buyer import Buyer
 from attendee import Attendee
 
@@ -33,8 +30,7 @@ def process_registration(event_url: str, csv_path: str, headless: bool = False):
 
     # Check with MAX + 1 as the first line is headers
     if len(attendee_lines) > MAX + 1:
-        print(f"Requests exist maximum allowed. Max = {MAX}")
-        return ProgramStatus.CONSTRAINT_VIOLATION
+        raise ValueError(f"Requests exist maximum allowed. Max = {MAX}")
 
     # Remove header line=
     attendee_lines.pop(0)
