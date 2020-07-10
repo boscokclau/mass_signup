@@ -20,6 +20,7 @@ from attendee import Attendee
 WAIT_MS = 1000
 MAX_ALLOWED = 10
 
+
 def signup(attendee_list, buyer, url, headless=False):
     """
     Sign-up for seats.
@@ -111,7 +112,7 @@ def signup(attendee_list, buyer, url, headless=False):
     register_button.click()
 
     """ ----------------------
-        Buyer informaiton
+        Buyer information
         ----------------------
     """
 
@@ -133,7 +134,7 @@ def signup(attendee_list, buyer, url, headless=False):
     num_attendees = len(div_attendee_surveys)
 
     """ ----------------------
-        Ticket informaiton
+        Ticket information
         ----------------------
     """
 
