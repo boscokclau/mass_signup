@@ -46,8 +46,7 @@ def signup(attendee_list, buyer, url, headless=False):
 
     # Quit if request is over MAX_ALLOWED
     if num_tickets > MAX_ALLOWED:
-        print(f"Request must be of less than {MAX_ALLOWED} attendees. Please break up the request to retry.")
-        return RegistrationStatus.TOO_MANY_REQUESTS
+        raise ValueError(f"Request must be of less than {MAX_ALLOWED} attendees. Please break up the request to retry.")
 
     print("Headless mode", "on. See console for output." if headless else "off. Enjoy the browser automation!")
     if not headless:
