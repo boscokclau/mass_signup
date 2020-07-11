@@ -86,24 +86,23 @@ def signup(attendee_list, buyer, url, headless=False):
 
     register_button = driver.find_element_by_css_selector('.eds-btn')
 
-    # Sold out
+    # Sold out, Button is Detail to waiting list registration
     if register_button.text != 'Register':
-        print("Sold out. No registriation has been processed")
+        print("Sold out. No registration has been processed")
+        return RegistrationStatus.SOLD_OUT
 
     # Check if enough ticket for request
-    print("Checking for ticket availablity for request...")
+    print("Checking for ticket availability for request...")
     remaining_ticket_text = driver.find_element_by_xpath("//span[@data-spec='remaining-tickets']")
     remaining_ticket = int(remaining_ticket_text.text.split()[0])
 
     if remaining_ticket < len(attendee_list):
         print(
             f"Only {remaining_ticket} remaining. Not enough for {len(attendee_list)} attendees. No registration processed.")
-        return RegistrationStatus.TOO_MANY_REQUESTS
+        return RegistrationStatus.NOT_ENOUGH_SEATS
 
     print("Tickets available. Proceeding...")
     quantity_dropdown = driver.find_element_by_xpath("//*[starts-with(@id, 'ticket-quantity-selector')]")
-
-    # print( "button_id:", quantity_dropdown.get_attribute('id'))
 
     quantity_select = quantity_dropdown.find_element_by_xpath(f"//option[. = '{num_tickets}']")
     quantity_select.click()
@@ -163,13 +162,6 @@ def signup(attendee_list, buyer, url, headless=False):
 
         # EB Custom Fields
         custom_fields = driver.find_elements_by_xpath(f"//*[starts-with(@name, '{ticket_id}.U-')]")
-
-        """
-        for field in custom_fields:
-            print( "ID", field.get_attribute('id') )
-            print( "Name", field.get_attribute('name') )
-            print()
-        """
 
         # Phone number
         phone_textbox = custom_fields[0]
