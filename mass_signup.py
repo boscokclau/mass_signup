@@ -206,7 +206,7 @@ def signup(attendee_list, buyer, url, headless=False):
     register_button = driver.find_element_by_xpath(f"//button[@data-spec='eds-modal__primary-button']")
     register_button.click()
 
-    print("Waitig for web response")
+    print("Waiting for web response")
 
     for i in range(10):
         print(10 - i, "second{} remaining".format('s' if 10 - i > 1 else ''))
@@ -218,33 +218,3 @@ def signup(attendee_list, buyer, url, headless=False):
     return RegistrationStatus.COMPLETED
 
 
-def main():
-    buyer_FN = "BuyerFN"
-    buyer_LN = "BuyerLN"
-    buyer_email = "bosco.kc.lau@gmail.com"
-
-    buyer = Buyer().initWith(buyer_FN, buyer_LN, buyer_email)
-
-    attendee_list = list()
-    attendee_list.append(
-        Attendee().from_values(last_name="LN1", first_name="FN1", email="a1@b1.com", phone_number="1234567890",
-                               is_volunteer=True))
-    attendee_list.append(
-        Attendee().from_values(last_name="LN2", first_name="FN2", email="a2@b2.com", phone_number="2234567890",
-                               is_volunteer=False))
-    attendee_list.append(
-        Attendee().from_values(last_name="LN3", first_name="FN3", email="a3@b3.com", phone_number="3234567890",
-                               is_volunteer=True))
-
-    url = "https://www.eventbrite.com/e/test-event-tickets-109437173532"
-
-    print("\n ================================", "\n    Executing with test data",
-          "\n ================================ \n")
-
-    status = signup(attendee_list=attendee_list, buyer=buyer, url=url, headless=False)
-
-    sys.exit(status)
-
-
-if __name__ == '__main__':
-    main()
