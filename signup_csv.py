@@ -11,10 +11,6 @@ import mass_signup
 from buyer import Buyer
 from attendee import Attendee
 
-# Application settings
-MAX = 10
-
-
 def process_registration(event_url: str, csv_path: str, headless: bool = False):
     # Buyer is always the OLMV Mass EB organizer
     buyer_FN = "OLMV"
@@ -27,10 +23,6 @@ def process_registration(event_url: str, csv_path: str, headless: bool = False):
 
     with open(csv_path) as f:
         attendee_lines = f.read().splitlines()
-
-    # Check with MAX + 1 as the first line is headers
-    if len(attendee_lines) > MAX + 1:
-        raise ValueError(f"Requests exist maximum allowed. Max = {MAX}")
 
     # Remove header line=
     attendee_lines.pop(0)
