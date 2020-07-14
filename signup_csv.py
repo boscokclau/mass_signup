@@ -41,7 +41,8 @@ def process_registration(event_url: str, csv_path: str, headless: bool = False, 
     else:
         attendee_list_collections.append(attendee_list)
 
-    print("Processing:")
+    print("Processing {} order{}:".format(len(attendee_list_collections),
+                                          "" if len(attendee_list_collections) == 1 else "s"))
     print("\tAttendee file:", csv_path)
     print("\tEvent: ", event_url)
     print()
