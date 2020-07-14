@@ -46,9 +46,18 @@ def process_registration(event_url: str, csv_path: str, headless: bool = False, 
     print("\tEvent: ", event_url)
     print()
 
+    status_all = 0
     for i, a_list in enumerate(attendee_list_collections):
         print("Order:", i + 1)
-        mass_signup.signup(a_list, buyer, event_url, headless)
+        status = mass_signup.signup(a_list, buyer, event_url, headless)
+
+        print("status: ", status)
+
+        # status != 0 means something might have gone wrong. Set bit to indicate which order had a problem
+        if status:
+            status_all = status_all | 1 << i
+
+    return status_all
 
 
 # Program Main
@@ -67,4 +76,5 @@ if __name__ == '__main__':
     headless = args.headless
     process_all_by = int(args.process_all_by)
 
-    process_registration(event_url, csv_path, headless, process_all_by)
+    status = process_registration(event_url, csv_path, headless, process_all_by)
+    print("Status = ", status)
