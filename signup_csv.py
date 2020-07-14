@@ -52,8 +52,6 @@ def process_registration(event_url: str, csv_path: str, headless: bool = False, 
         print("Order:", i + 1)
         status = mass_signup.signup(a_list, buyer, event_url, headless)
 
-        print("status: ", status)
-
         # status != 0 means something might have gone wrong. Set bit to indicate which order had a problem
         if status:
             status_all = status_all | 1 << i
