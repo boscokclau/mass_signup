@@ -11,7 +11,10 @@ import mass_signup
 from buyer import Buyer
 from attendee import Attendee
 
-def process_registration(event_url: str, csv_path: str, headless: bool = False):
+
+# Application setting
+
+def process_registration(event_url: str, csv_path: str, headless: bool = False, process_all_by: int = 0):
     # Buyer is always the OLMV Mass EB organizer
     buyer_FN = "OLMV"
     buyer_LN = "Seattle"
@@ -31,12 +34,21 @@ def process_registration(event_url: str, csv_path: str, headless: bool = False):
         attendee = Attendee.from_csv_string(line)
         attendee_list.append(attendee)
 
+    attendee_list_collections = list()
+    if process_all_by != 0:
+        attendee_list_collections = [attendee_list[i:i + process_all_by] for i in
+                                     range(0, len(attendee_list), process_all_by)]
+    else:
+        attendee_list_collections.append(attendee_list)
+
     print("Processing:")
     print("\tAttendee file:", csv_path)
     print("\tEvent: ", event_url)
     print()
 
-    return mass_signup.signup(attendee_list, buyer, event_url, headless)
+    for i, a_list in enumerate(attendee_list_collections):
+        print("Order:", i + 1)
+        mass_signup.signup(a_list, buyer, event_url, headless)
 
 
 # Program Main
@@ -46,10 +58,13 @@ if __name__ == '__main__':
     parser.add_argument('csv_path', help='File path to the attendee CSV file.')
     parser.add_argument('-c', '--command-line-mode', dest='headless', help='Command line mode. Run browser headless.',
                         action='store_true')
+    parser.add_argument('-a', '-all_by', dest='process_all_by', default=0, help=argparse.SUPPRESS)
+
     args = parser.parse_args()
 
     event_url = args.event_url
     csv_path = args.csv_path
     headless = args.headless
+    process_all_by = int(args.process_all_by)
 
-    process_registration(event_url, csv_path, headless)
+    process_registration(event_url, csv_path, headless, process_all_by)
