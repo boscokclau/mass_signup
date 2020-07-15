@@ -6,7 +6,6 @@ Created on Wed Jul  1 15:22:33 2020
 @author: boscokclau
 """
 
-import sys
 import time
 from constants import RegistrationStatus
 from selenium import webdriver
@@ -216,5 +215,3 @@ def signup(attendee_list, buyer, url, headless=False):
     print(f"\nRegistration complete. Order ID: {order_id}. \nPlease check email to confirm.")
 
     return RegistrationStatus.COMPLETED
-
-
