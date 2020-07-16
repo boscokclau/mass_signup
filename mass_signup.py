@@ -20,7 +20,7 @@ WAIT_MS = 1000
 MAX_ALLOWED = 10
 
 
-def signup(attendee_list, buyer, url, headless=False):
+def signup(attendee_list: list, buyer: Buyer, url: str, headless: bool = False) -> (RegistrationStatus, dict):
     """
     Sign-up for seats.
 
@@ -72,7 +72,7 @@ def signup(attendee_list, buyer, url, headless=False):
 
     if status_text != 'Register':
         print("Sales has ended. No registration has been processed.")
-        return RegistrationStatus.SOLD_OUT
+        return RegistrationStatus.SALES_ENDED, dict()
 
     # Space available. Continue
     register_button.click()
@@ -88,7 +88,7 @@ def signup(attendee_list, buyer, url, headless=False):
     # Sold out, Button is Detail to waiting list registration
     if register_button.text != 'Register':
         print("Sold out. No registration has been processed")
-        return RegistrationStatus.SOLD_OUT
+        return RegistrationStatus.SOLD_OUT, dict()
 
     # Check if enough ticket for request
     print("Checking for ticket availability for request...")
@@ -98,7 +98,7 @@ def signup(attendee_list, buyer, url, headless=False):
     if remaining_ticket < len(attendee_list):
         print(
             f"Only {remaining_ticket} remaining. Not enough for {len(attendee_list)} attendees. No registration processed.")
-        return RegistrationStatus.NOT_ENOUGH_SEATS
+        return RegistrationStatus.NOT_ENOUGH_SEATS, {"remaining": remaining_ticket}
 
     print("Tickets available. Proceeding...")
     quantity_dropdown = driver.find_element_by_xpath("//*[starts-with(@id, 'ticket-quantity-selector')]")
@@ -214,4 +214,4 @@ def signup(attendee_list, buyer, url, headless=False):
     order_id = driver.find_element_by_xpath(f"//h4[@data-spec='confirmation-order-id']").text
     print(f"\nRegistration complete. Order ID: {order_id}. \nPlease check email to confirm.")
 
-    return (RegistrationStatus.COMPLETED, order_id)
+    return RegistrationStatus.COMPLETED, {"order_id": order_id}

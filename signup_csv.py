@@ -34,9 +34,9 @@ def process_registration(event_url: str, csv_path: str, headless: bool = False, 
     status_all = 0
     for i, attendee_list in enumerate(attendee_list_collection):
         print("Order:", i + 1)
-        status, order_id = mass_signup.signup(attendee_list, buyer, event_url, headless)
+        status, info_dict = mass_signup.signup(attendee_list, buyer, event_url, headless)
 
-        print("status, order_id: ", status, ",", order_id)
+        print("status, order_id: ", status, ",", str(info_dict))
 
         # status != 0 means something might have gone wrong. Set bit to indicate which order had a problem
         if status:
