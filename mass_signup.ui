@@ -23,10 +23,10 @@
    <widget class="QFrame" name="frame">
     <property name="geometry">
      <rect>
-      <x>160</x>
+      <x>40</x>
       <y>30</y>
-      <width>461</width>
-      <height>121</height>
+      <width>531</width>
+      <height>151</height>
      </rect>
     </property>
     <property name="frameShape">
@@ -37,24 +37,21 @@
     </property>
     <layout class="QGridLayout" name="gridLayout">
      <item row="1" column="0">
-      <widget class="QLabel" name="lblCsv">
+      <widget class="QLabel" name="lblLoadAttendees">
        <property name="text">
-        <string>CSV File:</string>
+        <string>Attendees File:</string>
        </property>
        <property name="alignment">
         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
        </property>
       </widget>
      </item>
-     <item row="2" column="2">
+     <item row="3" column="2">
       <widget class="QPushButton" name="btnPlaceOrder">
        <property name="text">
         <string>Place Order</string>
        </property>
       </widget>
-     </item>
-     <item row="1" column="1">
-      <widget class="QLineEdit" name="txtCsvFilePath"/>
      </item>
      <item row="0" column="1" colspan="2">
       <widget class="QLineEdit" name="txtEventUrl"/>
@@ -70,9 +67,32 @@
       </widget>
      </item>
      <item row="1" column="2">
-      <widget class="QPushButton" name="btnCsvBrowse">
+      <widget class="QPushButton" name="btnLoadAttendees">
        <property name="text">
-        <string>Browse</string>
+        <string>Load Attendees</string>
+       </property>
+      </widget>
+     </item>
+     <item row="2" column="0">
+      <widget class="QLabel" name="lblLoadBuyer">
+       <property name="text">
+        <string>Buyer File:</string>
+       </property>
+       <property name="alignment">
+        <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="1">
+      <widget class="QLineEdit" name="txtAttendeesFilePath"/>
+     </item>
+     <item row="2" column="1">
+      <widget class="QLineEdit" name="txtBuyerFilePath"/>
+     </item>
+     <item row="2" column="2">
+      <widget class="QPushButton" name="btnLoadBuyer">
+       <property name="text">
+        <string>Load Buyer</string>
        </property>
       </widget>
      </item>
@@ -120,8 +140,8 @@
  </widget>
  <tabstops>
   <tabstop>txtEventUrl</tabstop>
-  <tabstop>txtCsvFilePath</tabstop>
-  <tabstop>btnCsvBrowse</tabstop>
+  <tabstop>txtAttendeesFilePath</tabstop>
+  <tabstop>btnLoadAttendees</tabstop>
   <tabstop>btnPlaceOrder</tabstop>
  </tabstops>
  <resources/>
