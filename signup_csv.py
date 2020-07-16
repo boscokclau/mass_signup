@@ -25,7 +25,6 @@ def process_registration(event_url: str, csv_path: str, buyer_path: str, headles
 
     with open(buyer_path, 'r') as f:
         buyer_firstname, buyer_lastname, buyer_email = next(csv.reader(f))
-        print( buyer_firstname, buyer_lastname, buyer_email)
 
     buyer = Buyer(buyer_firstname, buyer_lastname, buyer_email)
 
