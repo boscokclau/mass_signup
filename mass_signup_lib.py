@@ -5,6 +5,10 @@ Created on Thu Jul  2 20:13:58 2020
 @author: boscolau
 """
 
+import logging
+from pubsub import pub
+
+from constants import EventTopic
 from attendee import Attendee
 
 
@@ -41,3 +45,8 @@ def get_attendees_from_csv(csv_path: str, process_all_by: int = 0) -> list:
         attendee_list_collections.append(attendee_list)
 
     return attendee_list_collections
+
+
+def send_progress(msg:str):
+    logging.info(msg)
+    pub.sendMessage(EventTopic.PROGRESS, msg=msg)

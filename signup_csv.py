@@ -8,9 +8,14 @@ Created on Thu Jul  2 20:13:58 2020
 
 import argparse
 import csv
+import logging
 import mass_signup
 import mass_signup_lib
+from pubsub import pub
+from constants import EventTopic
+import constants
 from buyer import Buyer
+
 
 def process_registration(event_url: str, csv_path: str, buyer_path: str, headless: bool = False,
                          process_all_by: int = 0):
@@ -46,6 +51,13 @@ def process_registration(event_url: str, csv_path: str, buyer_path: str, headles
     return status_all
 
 
+# Progress messages subscription and print()
+def print_progress(msg: str):
+    print("Progress Message:", msg)
+
+
+pub.subscribe(print_progress, EventTopic.PROGRESS)
+
 # Program Main
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
@@ -55,6 +67,9 @@ if __name__ == '__main__':
     parser.add_argument('-c', '--command-line-mode', dest='headless', help='Command line mode. Run browser headless.',
                         action='store_true')
     parser.add_argument('-a', '-all_by', dest='process_all_by', default=0, help=argparse.SUPPRESS)
+    parser.add_argument('-l', '-loglevel', dest='log_level',
+                        choices=['critical', 'error', 'warn', 'warning', 'info', 'debug'], default='warn',
+                        help=argparse.SUPPRESS)
 
     args = parser.parse_args()
 
@@ -63,6 +78,9 @@ if __name__ == '__main__':
     buyer_path = args.buyer_path
     headless = args.headless
     process_all_by = int(args.process_all_by)
+    log_level = constants.log_levels[args.log_level]
+
+    logging.basicConfig(level=log_level)
 
     status = process_registration(event_url, csv_path, buyer_path, headless, process_all_by)
     print("Status = ", status)

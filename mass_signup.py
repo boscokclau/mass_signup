@@ -7,7 +7,9 @@ Created on Wed Jul  1 15:22:33 2020
 """
 
 import time
-from constants import RegistrationStatus
+from mass_signup_lib import send_progress
+from pubsub import pub
+from constants import RegistrationStatus, EventTopic
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
 from webdriver_manager.chrome import ChromeDriverManager
@@ -47,7 +49,7 @@ def signup(attendee_list: list, buyer: Buyer, url: str, headless: bool = False) 
     if num_tickets > MAX_ALLOWED:
         raise ValueError(f"Request must be of less than {MAX_ALLOWED} attendees. Please break up the request to retry.")
 
-    print("Headless mode", "on. See console for output." if headless else "off. Enjoy the browser automation!")
+    send_progress("Headless mode " + "on." if headless else "off.")
     if not headless:
         driver = webdriver.Chrome(ChromeDriverManager().install())
 
@@ -62,7 +64,7 @@ def signup(attendee_list: list, buyer: Buyer, url: str, headless: bool = False) 
 
     event_id = url.split('-')[-1]
 
-    print("Opening: ", url)
+    send_progress("Opening: " + url)
     driver.get(url)
 
     register_button = driver.find_element_by_id('eventbrite-widget-modal-trigger-' + str(event_id))
@@ -71,7 +73,7 @@ def signup(attendee_list: list, buyer: Buyer, url: str, headless: bool = False) 
     status_text = register_button.get_attribute('data-tracking-label')
 
     if status_text != 'Register':
-        print("Sales has ended. No registration has been processed.")
+        send_progress("Sales has ended. No registration has been processed.")
         return RegistrationStatus.SALES_ENDED, dict()
 
     # Space available. Continue
@@ -87,20 +89,20 @@ def signup(attendee_list: list, buyer: Buyer, url: str, headless: bool = False) 
 
     # Sold out, Button is Detail to waiting list registration
     if register_button.text != 'Register':
-        print("Sold out. No registration has been processed")
+        send_progress("Sold out. No registration has been processed")
         return RegistrationStatus.SOLD_OUT, dict()
 
     # Check if enough ticket for request
-    print("Checking for ticket availability for request...")
+    send_progress("Checking for ticket availability for request...")
     remaining_ticket_text = driver.find_element_by_xpath("//span[@data-spec='remaining-tickets']")
     remaining_ticket = int(remaining_ticket_text.text.split()[0])
 
     if remaining_ticket < len(attendee_list):
-        print(
+        send_progress(
             f"Only {remaining_ticket} remaining. Not enough for {len(attendee_list)} attendees. No registration processed.")
         return RegistrationStatus.NOT_ENOUGH_SEATS, {"remaining": remaining_ticket}
 
-    print("Tickets available. Proceeding...")
+    send_progress("Tickets available. Proceeding...")
     quantity_dropdown = driver.find_element_by_xpath("//*[starts-with(@id, 'ticket-quantity-selector')]")
 
     quantity_select = quantity_dropdown.find_element_by_xpath(f"//option[. = '{num_tickets}']")
@@ -137,7 +139,7 @@ def signup(attendee_list: list, buyer: Buyer, url: str, headless: bool = False) 
 
     assert num_tickets == num_attendees, "Eventbrite might have changed the web site. Contact developer and organizer to update this application"
 
-    print("Start entering ticket information for {0} attendees{1}...".format(num_attendees,
+    send_progress("Start entering ticket information for {0} attendees{1}...".format(num_attendees,
                                                                              "" if num_attendees == 1 else "s"))
 
     for i in range(num_attendees):
@@ -146,8 +148,8 @@ def signup(attendee_list: list, buyer: Buyer, url: str, headless: bool = False) 
 
         cur_attendee = attendee_list[i]
 
-        print("\tAttendee:", i + 1)
-        print("\t\t", cur_attendee)
+        send_progress("\tAttendee: ", + str(i + 1))
+        send_progress("\t\t" + str(cur_attendee))
 
         driver.find_element_by_id(ticket_id + '.N-first_name').click()
         driver.find_element_by_id(ticket_id + '.N-first_name').send_keys(cur_attendee.first_name)
@@ -205,13 +207,13 @@ def signup(attendee_list: list, buyer: Buyer, url: str, headless: bool = False) 
     register_button = driver.find_element_by_xpath(f"//button[@data-spec='eds-modal__primary-button']")
     register_button.click()
 
-    print("Waiting for web response")
+    send_progress("Waiting for web response")
 
     for i in range(10):
-        print(10 - i, "second{} remaining".format('s' if 10 - i > 1 else ''))
+        send_progress(str(10 - i) + " second{} remaining".format('s' if 10 - i > 1 else ''))
         time.sleep(1)
 
     order_id = driver.find_element_by_xpath(f"//h4[@data-spec='confirmation-order-id']").text
-    print(f"\nRegistration complete. Order ID: {order_id}. \nPlease check email to confirm.")
+    send_progress(f"\nRegistration complete. Order ID: {order_id}. \nPlease check email to confirm.")
 
     return RegistrationStatus.COMPLETED, {"order_id": order_id}
