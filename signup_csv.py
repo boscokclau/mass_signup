@@ -8,6 +8,7 @@ Created on Thu Jul  2 20:13:58 2020
 
 import argparse
 import mass_signup
+import mass_signup_lib
 from buyer import Buyer
 from attendee import Attendee
 
@@ -22,35 +23,20 @@ def process_registration(event_url: str, csv_path: str, headless: bool = False, 
 
     buyer = Buyer(buyer_FN, buyer_LN, buyer_email)
 
-    attendee_list = list()
+    attendee_list_collection = mass_signup_lib.get_attendees_from_csv(csv_path, process_all_by)
 
-    with open(csv_path) as f:
-        attendee_lines = f.read().splitlines()
-
-    # Remove header line=
-    attendee_lines.pop(0)
-
-    for line in attendee_lines:
-        attendee = Attendee.from_csv_string(line)
-        attendee_list.append(attendee)
-
-    attendee_list_collections = list()
-    if process_all_by != 0:
-        attendee_list_collections = [attendee_list[i:i + process_all_by] for i in
-                                     range(0, len(attendee_list), process_all_by)]
-    else:
-        attendee_list_collections.append(attendee_list)
-
-    print("Processing {} order{}:".format(len(attendee_list_collections),
-                                          "" if len(attendee_list_collections) == 1 else "s"))
+    print("Processing {} order{}:".format(len(attendee_list_collection),
+                                          "" if len(attendee_list_collection) == 1 else "s"))
     print("\tAttendee file:", csv_path)
     print("\tEvent: ", event_url)
     print()
 
     status_all = 0
-    for i, a_list in enumerate(attendee_list_collections):
+    for i, attendee_list in enumerate(attendee_list_collection):
         print("Order:", i + 1)
-        status = mass_signup.signup(a_list, buyer, event_url, headless)
+        status, order_id = mass_signup.signup(attendee_list, buyer, event_url, headless)
+
+        print("status, order_id: ", status, ",", order_id)
 
         # status != 0 means something might have gone wrong. Set bit to indicate which order had a problem
         if status:

@@ -214,4 +214,4 @@ def signup(attendee_list, buyer, url, headless=False):
     order_id = driver.find_element_by_xpath(f"//h4[@data-spec='confirmation-order-id']").text
     print(f"\nRegistration complete. Order ID: {order_id}. \nPlease check email to confirm.")
 
-    return RegistrationStatus.COMPLETED
+    return (RegistrationStatus.COMPLETED, order_id)
