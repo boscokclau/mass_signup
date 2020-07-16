@@ -11,10 +11,6 @@ import csv
 import mass_signup
 import mass_signup_lib
 from buyer import Buyer
-from attendee import Attendee
-
-
-# Application setting
 
 def process_registration(event_url: str, csv_path: str, buyer_path: str, headless: bool = False,
                          process_all_by: int = 0):
