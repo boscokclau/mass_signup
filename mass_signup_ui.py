@@ -1,11 +1,14 @@
 import sys
 import csv
+import logging
+from pubsub import pub
 from pathlib import Path
 from PyQt5 import QtWidgets, uic
 from PyQt5.QtWidgets import QFileDialog
 
 import mass_signup_lib
 import mass_signup
+from constants import EventTopic
 from buyer import Buyer
 
 # Application settings
@@ -70,6 +73,16 @@ class Ui(QtWidgets.QMainWindow):
             print("status, order_id: ", status, ",", str(info_dict))
 
 
+# Progress messages subscription and print()
+def print_progress(msg: str):
+    print("Progress Message:", msg)
+
+
+pub.subscribe(print_progress, EventTopic.PROGRESS)
+
+# Logging setup for debugging purpose
+# TODO: Get log level configruable
+logging.basicConfig()
 app = QtWidgets.QApplication(sys.argv)
 
 window = Ui()
