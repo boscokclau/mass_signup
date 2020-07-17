@@ -8,8 +8,7 @@ Created on Wed Jul  1 15:22:33 2020
 
 import time
 from mass_signup_lib import send_progress
-from pubsub import pub
-from constants import RegistrationStatus, EventTopic
+from constants import RegistrationStatus
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
 from webdriver_manager.chrome import ChromeDriverManager
@@ -140,7 +139,7 @@ def signup(attendee_list: list, buyer: Buyer, url: str, headless: bool = False) 
     assert num_tickets == num_attendees, "Eventbrite might have changed the web site. Contact developer and organizer to update this application"
 
     send_progress("Start entering ticket information for {0} attendees{1}...".format(num_attendees,
-                                                                             "" if num_attendees == 1 else "s"))
+                                                                                     "" if num_attendees == 1 else "s"))
 
     for i in range(num_attendees):
         ticket_id = div_attendee_surveys[i].get_attribute('id')
