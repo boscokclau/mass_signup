@@ -1,6 +1,7 @@
 import sys
 import csv
-import logging
+import logging.config
+import yaml
 from pubsub import pub
 from pathlib import Path
 from PyQt5 import QtWidgets, uic
@@ -81,8 +82,10 @@ def print_progress(msg: str):
 pub.subscribe(print_progress, EventTopic.PROGRESS)
 
 # Logging setup for debugging purpose
-# TODO: Get log level configruable
-logging.basicConfig()
+
+logging.config.dictConfig(yaml.safe_load(open('ui_logging.conf', 'r')))
+logger = logging.getLogger(EventTopic.PROGRESS)
+
 app = QtWidgets.QApplication(sys.argv)
 
 window = Ui()
