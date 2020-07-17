@@ -8,7 +8,8 @@ Created on Thu Jul  2 20:13:58 2020
 
 import argparse
 import csv
-import logging
+import logging.config
+import yaml
 import mass_signup
 import mass_signup_lib
 from pubsub import pub
@@ -68,7 +69,7 @@ if __name__ == '__main__':
                         action='store_true')
     parser.add_argument('-a', '-all_by', dest='process_all_by', default=0, help=argparse.SUPPRESS)
     parser.add_argument('-l', '-loglevel', dest='log_level',
-                        choices=['critical', 'error', 'warning', 'info', 'debug'], default='warn',
+                        choices=['critical', 'error', 'warning', 'info', 'debug'], default='warning',
                         help=argparse.SUPPRESS)
 
     args = parser.parse_args()
@@ -81,6 +82,7 @@ if __name__ == '__main__':
     log_level = constants.log_levels[args.log_level]
 
     logging.basicConfig(level=log_level)
+    logger = logging.getLogger(EventTopic.PROGRESS)
 
     status = process_registration(event_url, csv_path, buyer_path, headless, process_all_by)
     print("Status = ", status)
