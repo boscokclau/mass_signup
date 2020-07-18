@@ -36,7 +36,7 @@
      <enum>QFrame::Raised</enum>
     </property>
     <layout class="QGridLayout" name="gridLayout">
-     <item row="1" column="0">
+     <item row="2" column="0">
       <widget class="QLabel" name="lblLoadAttendees">
        <property name="text">
         <string>Attendees File:</string>
@@ -46,15 +46,29 @@
        </property>
       </widget>
      </item>
-     <item row="3" column="2">
+     <item row="2" column="2">
+      <widget class="QPushButton" name="btnLoadAttendees">
+       <property name="text">
+        <string>Load Attendees</string>
+       </property>
+      </widget>
+     </item>
+     <item row="4" column="2">
       <widget class="QPushButton" name="btnPlaceOrder">
        <property name="text">
         <string>Place Order</string>
        </property>
       </widget>
      </item>
-     <item row="0" column="1" colspan="2">
-      <widget class="QLineEdit" name="txtEventUrl"/>
+     <item row="3" column="0">
+      <widget class="QLabel" name="lblLoadBuyer">
+       <property name="text">
+        <string>Buyer File:</string>
+       </property>
+       <property name="alignment">
+        <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+       </property>
+      </widget>
      </item>
      <item row="0" column="0">
       <widget class="QLabel" name="lblEventUrl">
@@ -66,35 +80,21 @@
        </property>
       </widget>
      </item>
-     <item row="1" column="2">
-      <widget class="QPushButton" name="btnLoadAttendees">
-       <property name="text">
-        <string>Load Attendees</string>
-       </property>
-      </widget>
-     </item>
-     <item row="2" column="0">
-      <widget class="QLabel" name="lblLoadBuyer">
-       <property name="text">
-        <string>Buyer File:</string>
-       </property>
-       <property name="alignment">
-        <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-       </property>
-      </widget>
-     </item>
-     <item row="1" column="1">
+     <item row="2" column="1">
       <widget class="QLineEdit" name="txtAttendeesFilePath"/>
      </item>
-     <item row="2" column="1">
+     <item row="3" column="1">
       <widget class="QLineEdit" name="txtBuyerFilePath"/>
      </item>
-     <item row="2" column="2">
+     <item row="3" column="2">
       <widget class="QPushButton" name="btnLoadBuyer">
        <property name="text">
         <string>Load Buyer</string>
        </property>
       </widget>
+     </item>
+     <item row="0" column="1" colspan="2">
+      <widget class="QComboBox" name="cboEventUrl"/>
      </item>
     </layout>
    </widget>
@@ -139,7 +139,6 @@
   </action>
  </widget>
  <tabstops>
-  <tabstop>txtEventUrl</tabstop>
   <tabstop>txtAttendeesFilePath</tabstop>
   <tabstop>btnLoadAttendees</tabstop>
   <tabstop>btnPlaceOrder</tabstop>

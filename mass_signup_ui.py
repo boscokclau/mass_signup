@@ -9,6 +9,7 @@ from PyQt5.QtWidgets import QFileDialog
 
 import mass_signup_lib
 import mass_signup
+import ui_lib
 from constants import EventTopic
 from buyer import Buyer
 
@@ -22,12 +23,20 @@ class Ui(QtWidgets.QMainWindow):
         uic.loadUi("mass_signup.ui", self)
 
         # Widget handles
-        self.txtEventUrl = self.findChild(QtWidgets.QLineEdit, 'txtEventUrl')
+        self.cboEventUrl = self.findChild((QtWidgets.QComboBox), 'cboEventUrl')
         self.txtAttendeesFilePath = self.findChild(QtWidgets.QLineEdit, 'txtAttendeesFilePath')
         self.txtBuyerFilePath = self.findChild(QtWidgets.QLineEdit, 'txtBuyerFilePath')
         self.btnLoadAttendees = self.findChild(QtWidgets.QPushButton, 'btnLoadAttendees')
         self.btnLoadBuyer = self.findChild(QtWidgets.QPushButton, 'btnLoadBuyer')
         self.btnPlaceOrder = self.findChild(QtWidgets.QPushButton, 'btnPlaceOrder')
+
+        # Load initial data
+        # TODO: Make organization url configurable
+        events = ui_lib.get_active_events("https://mountvirgin.eventbrite.com")
+
+        for event in events:
+            self.cboEventUrl.addItem(event['event_name'], event)
+
 
         # Custom connects
         self.btnLoadAttendees.clicked.connect(self.openCsvSelectFileDialog)
@@ -56,7 +65,8 @@ class Ui(QtWidgets.QMainWindow):
 
         buyer = Buyer(buyer_firstname, buyer_lastname, buyer_email)
 
-        event_url = self.txtEventUrl.text()
+        event_url = self.cboEventUrl.itemData(self.cboEventUrl.currentIndex())['event_url']
+        print(event_url)
         csv_path = self.txtAttendeesFilePath.text()
         attendee_list_collection = mass_signup_lib.get_attendees_from_csv(csv_path, process_all_by=10)
 
