@@ -36,6 +36,9 @@
      <enum>QFrame::Raised</enum>
     </property>
     <layout class="QGridLayout" name="gridLayout">
+     <item row="0" column="1" colspan="2">
+      <widget class="QComboBox" name="cboEventUrl"/>
+     </item>
      <item row="2" column="0">
       <widget class="QLabel" name="lblLoadAttendees">
        <property name="text">
@@ -53,20 +56,10 @@
        </property>
       </widget>
      </item>
-     <item row="4" column="2">
+     <item row="3" column="2">
       <widget class="QPushButton" name="btnPlaceOrder">
        <property name="text">
         <string>Place Order</string>
-       </property>
-      </widget>
-     </item>
-     <item row="3" column="0">
-      <widget class="QLabel" name="lblLoadBuyer">
-       <property name="text">
-        <string>Buyer File</string>
-       </property>
-       <property name="alignment">
-        <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
        </property>
       </widget>
      </item>
@@ -82,19 +75,6 @@
      </item>
      <item row="2" column="1">
       <widget class="QLineEdit" name="txtAttendeesFilePath"/>
-     </item>
-     <item row="3" column="1">
-      <widget class="QLineEdit" name="txtBuyerFilePath"/>
-     </item>
-     <item row="3" column="2">
-      <widget class="QPushButton" name="btnLoadBuyer">
-       <property name="text">
-        <string>Load Buyer</string>
-       </property>
-      </widget>
-     </item>
-     <item row="0" column="1" colspan="2">
-      <widget class="QComboBox" name="cboEventUrl"/>
      </item>
     </layout>
    </widget>

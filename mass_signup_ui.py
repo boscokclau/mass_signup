@@ -18,12 +18,15 @@ from buyer import Buyer
 USER_HOME_DIR = str(Path.home())
 GROUP_SIZE = 10
 DEFAULT_ORG_URL = "https://mountvirgin.eventbrite.com"
+BUYER_FILE_PATH = "buyer_olmv.csv"
 
 
 class Ui(QtWidgets.QMainWindow):
-    def __init__(self, org_url: str, headless: bool = True, process_all_by: int = GROUP_SIZE):
+    def __init__(self, org_url: str, buyer_file_path: str, headless: bool = True, process_all_by: int = GROUP_SIZE):
         super(Ui, self).__init__()
 
+        self.org_url = org_url
+        self.buyer_file_path = buyer_file_path
         self.headless = headless
         self.process_all_by = process_all_by
 
@@ -33,13 +36,22 @@ class Ui(QtWidgets.QMainWindow):
         # Widget handles
         self.cboEventUrl = self.findChild(QtWidgets.QComboBox, 'cboEventUrl')
         self.txtAttendeesFilePath = self.findChild(QtWidgets.QLineEdit, 'txtAttendeesFilePath')
-        self.txtBuyerFilePath = self.findChild(QtWidgets.QLineEdit, 'txtBuyerFilePath')
         self.btnLoadAttendees = self.findChild(QtWidgets.QPushButton, 'btnLoadAttendees')
-        self.btnLoadBuyer = self.findChild(QtWidgets.QPushButton, 'btnLoadBuyer')
         self.btnPlaceOrder = self.findChild(QtWidgets.QPushButton, 'btnPlaceOrder')
 
         # Load initial data
-        events = ui_lib.get_active_events(org_url)
+        # Buyer
+        buyer_firstname = None
+        buyer_lastname = None
+        buyer_email = None
+
+        with open(self.buyer_file_path, 'r') as f:
+            buyer_firstname, buyer_lastname, buyer_email = next(csv.reader(f))
+            print(buyer_firstname, buyer_lastname, buyer_email)
+
+        self.buyer = Buyer(buyer_firstname, buyer_lastname, buyer_email)
+
+        events = ui_lib.get_active_events(self.org_url)
         events.sort(key=lambda x: x['event_name'])
 
         for event in events:
@@ -47,7 +59,6 @@ class Ui(QtWidgets.QMainWindow):
 
         # Custom connects
         self.btnLoadAttendees.clicked.connect(self.openCsvSelectFileDialog)
-        self.btnLoadBuyer.clicked.connect(self.openBuyerSelectFileDialog)
         self.btnPlaceOrder.clicked.connect(self.placeOrder)
 
     def openCsvSelectFileDialog(self):
@@ -59,19 +70,6 @@ class Ui(QtWidgets.QMainWindow):
         self.txtBuyerFilePath.setText(file_path[0])
 
     def placeOrder(self):
-        # Buyer
-        buyer_firstname = None
-        buyer_lastname = None
-        buyer_email = None
-
-        buyer_path = self.txtBuyerFilePath.text()
-
-        with open(buyer_path, 'r') as f:
-            buyer_firstname, buyer_lastname, buyer_email = next(csv.reader(f))
-            print(buyer_firstname, buyer_lastname, buyer_email)
-
-        buyer = Buyer(buyer_firstname, buyer_lastname, buyer_email)
-
         event_url = self.cboEventUrl.itemData(self.cboEventUrl.currentIndex())['event_url']
         print(event_url)
         csv_path = self.txtAttendeesFilePath.text()
@@ -81,7 +79,7 @@ class Ui(QtWidgets.QMainWindow):
         for i, attendee_list in enumerate(attendee_list_collection):
             # TODO: Print this to UI
             print("Order:", i + 1)
-            status, info_dict = mass_signup.signup(attendee_list, buyer, event_url, headless=self.headless)
+            status, info_dict = mass_signup.signup(attendee_list, self.buyer, event_url, headless=self.headless)
 
             # status != 0 means something might have gone wrong. Set bit to indicate which order had a problem
             if status:
@@ -103,6 +101,7 @@ if __name__ == "__main__":
                         action='store_true')
     parser.add_argument('-a', '--all_by', dest='process_all_by', default=0, help='Process all attendees by group of')
     parser.add_argument('-u', '--url', dest='url', default=None, help='Eventbrite Organizer URL')
+    parser.add_argument('-b', '--buyer', dest='buyer', default=None, help='Buyer file path')
 
     args = parser.parse_args()
 
@@ -115,7 +114,8 @@ if __name__ == "__main__":
     org_url = args.url if args.url else DEFAULT_ORG_URL
     headless = not args.gui_on if args.gui_on else True
     process_all_by = args.process_all_by if args.process_all_by else GROUP_SIZE
+    buyer_file_path = args.buyer if args.buyer else BUYER_FILE_PATH
 
-    window = Ui(org_url, headless=headless, process_all_by=process_all_by)
+    window = Ui(org_url, buyer_file_path, headless=headless, process_all_by=process_all_by)
     window.show()
     app.exec()
