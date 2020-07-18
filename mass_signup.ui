@@ -39,7 +39,7 @@
      <item row="2" column="0">
       <widget class="QLabel" name="lblLoadAttendees">
        <property name="text">
-        <string>Attendees File:</string>
+        <string>Attendees File</string>
        </property>
        <property name="alignment">
         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
@@ -63,7 +63,7 @@
      <item row="3" column="0">
       <widget class="QLabel" name="lblLoadBuyer">
        <property name="text">
-        <string>Buyer File:</string>
+        <string>Buyer File</string>
        </property>
        <property name="alignment">
         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
@@ -71,9 +71,9 @@
       </widget>
      </item>
      <item row="0" column="0">
-      <widget class="QLabel" name="lblEventUrl">
+      <widget class="QLabel" name="lblEvent">
        <property name="text">
-        <string>Event Url:</string>
+        <string>Event</string>
        </property>
        <property name="alignment">
         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>

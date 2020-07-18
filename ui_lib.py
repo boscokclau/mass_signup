@@ -34,5 +34,5 @@ def get_active_events(organizer_url: str, headless=True) -> list:
     return event_list
 
 if __name__ == "__main__":
-    events = get_active_events("https://mountvirgin.eventbrite.com", headless=True)
+    events = get_active_events("https://giowoods.eventbrite.com", headless=True)
     print(str(events))

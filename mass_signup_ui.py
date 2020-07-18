@@ -1,3 +1,4 @@
+import argparse
 import sys
 import csv
 import logging.config
@@ -15,15 +16,22 @@ from buyer import Buyer
 
 # Application settings
 USER_HOME_DIR = str(Path.home())
+GROUP_SIZE = 10
+DEFAULT_ORG_URL = "https://mountvirgin.eventbrite.com"
 
 
 class Ui(QtWidgets.QMainWindow):
-    def __init__(self):
+    def __init__(self, org_url: str, headless: bool = True, process_all_by: int = GROUP_SIZE):
         super(Ui, self).__init__()
+
+        self.headless = headless
+        self.process_all_by = process_all_by
+
+        # Load UI file
         uic.loadUi("mass_signup.ui", self)
 
         # Widget handles
-        self.cboEventUrl = self.findChild((QtWidgets.QComboBox), 'cboEventUrl')
+        self.cboEventUrl = self.findChild(QtWidgets.QComboBox, 'cboEventUrl')
         self.txtAttendeesFilePath = self.findChild(QtWidgets.QLineEdit, 'txtAttendeesFilePath')
         self.txtBuyerFilePath = self.findChild(QtWidgets.QLineEdit, 'txtBuyerFilePath')
         self.btnLoadAttendees = self.findChild(QtWidgets.QPushButton, 'btnLoadAttendees')
@@ -31,12 +39,11 @@ class Ui(QtWidgets.QMainWindow):
         self.btnPlaceOrder = self.findChild(QtWidgets.QPushButton, 'btnPlaceOrder')
 
         # Load initial data
-        # TODO: Make organization url configurable
-        events = ui_lib.get_active_events("https://mountvirgin.eventbrite.com")
+        events = ui_lib.get_active_events(org_url)
+        events.sort(key=lambda x: x['event_name'])
 
         for event in events:
             self.cboEventUrl.addItem(event['event_name'], event)
-
 
         # Custom connects
         self.btnLoadAttendees.clicked.connect(self.openCsvSelectFileDialog)
@@ -68,13 +75,13 @@ class Ui(QtWidgets.QMainWindow):
         event_url = self.cboEventUrl.itemData(self.cboEventUrl.currentIndex())['event_url']
         print(event_url)
         csv_path = self.txtAttendeesFilePath.text()
-        attendee_list_collection = mass_signup_lib.get_attendees_from_csv(csv_path, process_all_by=10)
+        attendee_list_collection = mass_signup_lib.get_attendees_from_csv(csv_path, process_all_by=self.process_all_by)
 
         status_all = 0
         for i, attendee_list in enumerate(attendee_list_collection):
             # TODO: Print this to UI
             print("Order:", i + 1)
-            status, info_dict = mass_signup.signup(attendee_list, buyer, event_url, headless=True)
+            status, info_dict = mass_signup.signup(attendee_list, buyer, event_url, headless=self.headless)
 
             # status != 0 means something might have gone wrong. Set bit to indicate which order had a problem
             if status:
@@ -88,16 +95,27 @@ class Ui(QtWidgets.QMainWindow):
 def print_progress(msg: str):
     print("Progress Message:", msg)
 
-
 pub.subscribe(print_progress, EventTopic.PROGRESS)
 
-# Logging setup for debugging purpose
+if __name__ == "__main__":
+    parser = argparse.ArgumentParser()
+    parser.add_argument('-g', '--gui-mode', dest='gui_on', help='Show browser.',
+                        action='store_true')
+    parser.add_argument('-a', '--all_by', dest='process_all_by', default=0, help='Process all attendees by group of')
+    parser.add_argument('-u', '--url', dest='url', default=None, help='Eventbrite Organizer URL')
 
-logging.config.dictConfig(yaml.safe_load(open('ui_logging.conf', 'r')))
-logger = logging.getLogger(EventTopic.PROGRESS)
+    args = parser.parse_args()
 
-app = QtWidgets.QApplication(sys.argv)
+    # Log settings
+    logging.config.dictConfig(yaml.safe_load(open('ui_logging.conf', 'r')))
+    logger = logging.getLogger(EventTopic.PROGRESS)
 
-window = Ui()
-window.show()
-app.exec()
+    app = QtWidgets.QApplication(sys.argv)
+
+    org_url = args.url if args.url else DEFAULT_ORG_URL
+    headless = not args.gui_on if args.gui_on else True
+    process_all_by = args.process_all_by if args.process_all_by else GROUP_SIZE
+
+    window = Ui(org_url, headless=headless, process_all_by=process_all_by)
+    window.show()
+    app.exec()
