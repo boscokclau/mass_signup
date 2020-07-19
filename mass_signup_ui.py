@@ -67,12 +67,8 @@ class Ui(QtWidgets.QMainWindow):
         file_path = QFileDialog.getOpenFileName(self, "", USER_HOME_DIR, "CSV (*.csv)")
         self.txtAttendeesFilePath.setText(file_path[0])
 
-    def openBuyerSelectFileDialog(self):
-        file_path = QFileDialog.getOpenFileName(self, "", USER_HOME_DIR, "CSV (*.csv)")
-        self.txtBuyerFilePath.setText(file_path[0])
-
     def stateChangeBtnPlaceOrder(self):
-        self.btnPlaceOrder.setEnabled( True if len(self.txtAttendeesFilePath.text()) else False )
+        self.btnPlaceOrder.setEnabled(True if len(self.txtAttendeesFilePath.text()) else False)
 
     def placeOrder(self):
         event_url = self.cboEventUrl.itemData(self.cboEventUrl.currentIndex())['event_url']
@@ -97,6 +93,7 @@ class Ui(QtWidgets.QMainWindow):
 # Progress messages subscription and print()
 def print_progress(msg: str):
     print("Progress Message:", msg)
+
 
 pub.subscribe(print_progress, EventTopic.PROGRESS)
 
