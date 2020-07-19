@@ -13,7 +13,7 @@ import yaml
 import mass_signup
 import mass_signup_lib
 from pubsub import pub
-from constants import EventTopic
+from constants import EventTopic, RegistrationStatus
 import constants
 from buyer import Buyer
 
@@ -46,7 +46,7 @@ def process_registration(event_url: str, csv_path: str, buyer_path: str, headles
     print("status, order_id: ", status, ",", str(info_dict))
 
     # status != 0 means something might have gone wrong. Set bit to indicate which order had a problem
-    if status:
+    if status != RegistrationStatus.COMPLETED:
         status_all = status_all | 1 << i
 
     return status_all
