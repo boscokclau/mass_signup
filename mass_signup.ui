@@ -25,7 +25,7 @@
      <rect>
       <x>30</x>
       <y>20</y>
-      <width>591</width>
+      <width>664</width>
       <height>157</height>
      </rect>
     </property>
@@ -40,7 +40,7 @@
         </font>
        </property>
        <property name="text">
-        <string/>
+        <string>Buyer Name Place Holder</string>
        </property>
       </widget>
      </item>
