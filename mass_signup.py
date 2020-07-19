@@ -141,11 +141,8 @@ def signup(attendee_list: list, buyer: Buyer, url: str, headless: bool = False) 
     send_progress("Start entering ticket information for {0} attendees{1}...".format(num_attendees,
                                                                                      "" if num_attendees == 1 else "s"))
 
-    for i in range(num_attendees):
+    for i, cur_attendee in enumerate(attendee_list):
         ticket_id = div_attendee_surveys[i].get_attribute('id')
-        # print( "div id:", ticket_id )
-
-        cur_attendee = attendee_list[i]
 
         send_progress(f"\tAttendee: {i + 1:2d} -- {cur_attendee}")
 
