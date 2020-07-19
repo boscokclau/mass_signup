@@ -20,64 +20,84 @@
    <string>OLMV Mass Multi-attendee Registration</string>
   </property>
   <widget class="QWidget" name="centralwidget">
-   <widget class="QFrame" name="frame">
+   <widget class="QWidget" name="">
     <property name="geometry">
      <rect>
       <x>30</x>
-      <y>30</y>
-      <width>551</width>
-      <height>151</height>
+      <y>20</y>
+      <width>591</width>
+      <height>157</height>
      </rect>
     </property>
-    <property name="frameShape">
-     <enum>QFrame::StyledPanel</enum>
-    </property>
-    <property name="frameShadow">
-     <enum>QFrame::Raised</enum>
-    </property>
-    <layout class="QGridLayout" name="gridLayout">
-     <item row="0" column="1" colspan="2">
-      <widget class="QComboBox" name="cboEventUrl"/>
-     </item>
-     <item row="2" column="0">
-      <widget class="QLabel" name="lblLoadAttendees">
-       <property name="text">
-        <string>Attendees File</string>
-       </property>
-       <property name="alignment">
-        <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-       </property>
-      </widget>
-     </item>
-     <item row="2" column="2">
-      <widget class="QPushButton" name="btnLoadAttendees">
-       <property name="text">
-        <string>Load Attendees</string>
-       </property>
-      </widget>
-     </item>
-     <item row="3" column="2">
-      <widget class="QPushButton" name="btnPlaceOrder">
-       <property name="enabled">
-        <bool>false</bool>
-       </property>
-       <property name="text">
-        <string>Place Order</string>
-       </property>
-      </widget>
-     </item>
+    <layout class="QGridLayout" name="gridLayout_2">
      <item row="0" column="0">
-      <widget class="QLabel" name="lblEvent">
-       <property name="text">
-        <string>Event</string>
+      <widget class="QLabel" name="lblBuyerName">
+       <property name="font">
+        <font>
+         <pointsize>20</pointsize>
+         <weight>75</weight>
+         <bold>true</bold>
+        </font>
        </property>
-       <property name="alignment">
-        <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+       <property name="text">
+        <string/>
        </property>
       </widget>
      </item>
-     <item row="2" column="1">
-      <widget class="QLineEdit" name="txtAttendeesFilePath"/>
+     <item row="1" column="0">
+      <widget class="QFrame" name="frame">
+       <property name="frameShape">
+        <enum>QFrame::StyledPanel</enum>
+       </property>
+       <property name="frameShadow">
+        <enum>QFrame::Raised</enum>
+       </property>
+       <layout class="QGridLayout" name="gridLayout">
+        <item row="0" column="1" colspan="2">
+         <widget class="QComboBox" name="cboEventUrl"/>
+        </item>
+        <item row="2" column="0">
+         <widget class="QLabel" name="lblLoadAttendees">
+          <property name="text">
+           <string>Attendees File</string>
+          </property>
+          <property name="alignment">
+           <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+          </property>
+         </widget>
+        </item>
+        <item row="2" column="2">
+         <widget class="QPushButton" name="btnLoadAttendees">
+          <property name="text">
+           <string>Load Attendees</string>
+          </property>
+         </widget>
+        </item>
+        <item row="3" column="2">
+         <widget class="QPushButton" name="btnPlaceOrder">
+          <property name="enabled">
+           <bool>false</bool>
+          </property>
+          <property name="text">
+           <string>Place Order</string>
+          </property>
+         </widget>
+        </item>
+        <item row="0" column="0">
+         <widget class="QLabel" name="lblEvent">
+          <property name="text">
+           <string>Event</string>
+          </property>
+          <property name="alignment">
+           <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+          </property>
+         </widget>
+        </item>
+        <item row="2" column="1">
+         <widget class="QLineEdit" name="txtAttendeesFilePath"/>
+        </item>
+       </layout>
+      </widget>
      </item>
     </layout>
    </widget>

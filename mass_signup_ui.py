@@ -50,6 +50,7 @@ class Ui(QtWidgets.QMainWindow):
             print(buyer_firstname, buyer_lastname, buyer_email)
 
         self.buyer = Buyer(buyer_firstname, buyer_lastname, buyer_email)
+        self.lblBuyerName.setText(f"{self.buyer.first_name} {self.buyer.last_name}")
 
         events = ui_lib.get_active_events(self.org_url)
         events.sort(key=lambda x: x['event_name'])
@@ -77,6 +78,9 @@ class Ui(QtWidgets.QMainWindow):
         attendee_list_collection = mass_signup_lib.get_attendees_from_csv(csv_path, process_all_by=self.process_all_by)
 
         status_all = 0
+        # TODO: Print this to UI
+        print("Processing {} order{}:".format(len(attendee_list_collection),
+                                              "" if len(attendee_list_collection) == 1 else "s"))
         for i, attendee_list in enumerate(attendee_list_collection):
             # TODO: Print this to UI
             print("Order:", i + 1)
