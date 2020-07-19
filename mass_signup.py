@@ -147,8 +147,7 @@ def signup(attendee_list: list, buyer: Buyer, url: str, headless: bool = False) 
 
         cur_attendee = attendee_list[i]
 
-        send_progress("\tAttendee: " + str(i + 1))
-        send_progress("\t\t" + str(cur_attendee))
+        send_progress(f"\tAttendee: {i + 1:2d} -- {cur_attendee}")
 
         driver.find_element_by_id(ticket_id + '.N-first_name').click()
         driver.find_element_by_id(ticket_id + '.N-first_name').send_keys(cur_attendee.first_name)
