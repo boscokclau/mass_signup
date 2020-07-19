@@ -23,7 +23,7 @@
    <widget class="QFrame" name="frame">
     <property name="geometry">
      <rect>
-      <x>40</x>
+      <x>30</x>
       <y>30</y>
       <width>551</width>
       <height>151</height>
@@ -58,6 +58,9 @@
      </item>
      <item row="3" column="2">
       <widget class="QPushButton" name="btnPlaceOrder">
+       <property name="enabled">
+        <bool>false</bool>
+       </property>
        <property name="text">
         <string>Place Order</string>
        </property>

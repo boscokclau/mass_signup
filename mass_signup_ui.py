@@ -61,6 +61,8 @@ class Ui(QtWidgets.QMainWindow):
         self.btnLoadAttendees.clicked.connect(self.openCsvSelectFileDialog)
         self.btnPlaceOrder.clicked.connect(self.placeOrder)
 
+        self.txtAttendeesFilePath.textChanged.connect(self.stateChangeBtnPlaceOrder)
+
     def openCsvSelectFileDialog(self):
         file_path = QFileDialog.getOpenFileName(self, "", USER_HOME_DIR, "CSV (*.csv)")
         self.txtAttendeesFilePath.setText(file_path[0])
@@ -68,6 +70,9 @@ class Ui(QtWidgets.QMainWindow):
     def openBuyerSelectFileDialog(self):
         file_path = QFileDialog.getOpenFileName(self, "", USER_HOME_DIR, "CSV (*.csv)")
         self.txtBuyerFilePath.setText(file_path[0])
+
+    def stateChangeBtnPlaceOrder(self):
+        self.btnPlaceOrder.setEnabled( True if len(self.txtAttendeesFilePath.text()) else False )
 
     def placeOrder(self):
         event_url = self.cboEventUrl.itemData(self.cboEventUrl.currentIndex())['event_url']
