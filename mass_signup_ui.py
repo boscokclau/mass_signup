@@ -5,12 +5,13 @@ import logging.config
 import yaml
 from pubsub import pub
 from pathlib import Path
-from PyQt5 import QtWidgets, uic
+from PyQt5 import QtWidgets, QtCore, uic
 from PyQt5.QtWidgets import QFileDialog
 
 import mass_signup_lib
 import mass_signup
 import ui_lib
+from ui_lib import display_message
 from constants import EventTopic
 from buyer import Buyer
 
@@ -19,6 +20,41 @@ USER_HOME_DIR = str(Path.home())
 GROUP_SIZE = 10
 DEFAULT_ORG_URL = "https://mountvirgin.eventbrite.com"
 BUYER_FILE_PATH = "buyer_olmv.csv"
+
+
+class OrderRunner(QtCore.QThread):
+    def __init__(self, ui, parent=None):
+        super(OrderRunner, self).__init__(parent)
+        self.ui = ui
+
+    def run(self):
+        # Subscribe to progress message
+        pub.subscribe(self.process_progress_message, EventTopic.PROGRESS)
+
+        event_url = self.ui.cboEventUrl.itemData(self.ui.cboEventUrl.currentIndex())['event_url']
+        print(event_url)
+        csv_path = self.ui.txtAttendeesFilePath.text()
+        attendee_list_collection = mass_signup_lib.get_attendees_from_csv(csv_path,
+                                                                          process_all_by=self.ui.process_all_by)
+
+        status_all = 0
+        # TODO: Print this to UI
+        print("Processing {} order{}:".format(len(attendee_list_collection),
+                                              "" if len(attendee_list_collection) == 1 else "s"))
+        for i, attendee_list in enumerate(attendee_list_collection):
+            # TODO: Print this to UI
+            print("Order:", i + 1)
+            status, info_dict = mass_signup.signup(attendee_list, self.ui.buyer, event_url, headless=self.ui.headless)
+
+            # status != 0 means something might have gone wrong. Set bit to indicate which order had a problem
+            if status:
+                status_all = status_all | 1 << i
+
+            # TODO: Print this to UI
+            print("status, order_id: ", status, ",", str(info_dict))
+
+    def process_progress_message(self, msg: str):
+        display_message(msg)
 
 
 class Ui(QtWidgets.QMainWindow):
@@ -38,6 +74,10 @@ class Ui(QtWidgets.QMainWindow):
         self.txtAttendeesFilePath = self.findChild(QtWidgets.QLineEdit, 'txtAttendeesFilePath')
         self.btnLoadAttendees = self.findChild(QtWidgets.QPushButton, 'btnLoadAttendees')
         self.btnPlaceOrder = self.findChild(QtWidgets.QPushButton, 'btnPlaceOrder')
+        self.txtProgressMessage = self.findChild(QtWidgets.QPlainTextEdit, 'txtProgressMessage')
+
+        # Subscribe to display_message event
+        pub.subscribe(self.updateProgressDialog, EventTopic.DISPLAY_MESSAGE)
 
         # Load initial data
         # Buyer
@@ -64,6 +104,7 @@ class Ui(QtWidgets.QMainWindow):
 
         self.txtAttendeesFilePath.textChanged.connect(self.stateChangeBtnPlaceOrder)
 
+
     def openCsvSelectFileDialog(self):
         file_path = QFileDialog.getOpenFileName(self, "", USER_HOME_DIR, "CSV (*.csv)")
         self.txtAttendeesFilePath.setText(file_path[0])
@@ -71,35 +112,13 @@ class Ui(QtWidgets.QMainWindow):
     def stateChangeBtnPlaceOrder(self):
         self.btnPlaceOrder.setEnabled(True if len(self.txtAttendeesFilePath.text()) else False)
 
+    def updateProgressDialog(self, msg):
+        self.txtProgressMessage.textCursor().insertText(msg + "\n")
+
     def placeOrder(self):
-        event_url = self.cboEventUrl.itemData(self.cboEventUrl.currentIndex())['event_url']
-        print(event_url)
-        csv_path = self.txtAttendeesFilePath.text()
-        attendee_list_collection = mass_signup_lib.get_attendees_from_csv(csv_path, process_all_by=self.process_all_by)
+        self.order_runner = OrderRunner(self)
+        self.order_runner.start()
 
-        status_all = 0
-        # TODO: Print this to UI
-        print("Processing {} order{}:".format(len(attendee_list_collection),
-                                              "" if len(attendee_list_collection) == 1 else "s"))
-        for i, attendee_list in enumerate(attendee_list_collection):
-            # TODO: Print this to UI
-            print("Order:", i + 1)
-            status, info_dict = mass_signup.signup(attendee_list, self.buyer, event_url, headless=self.headless)
-
-            # status != 0 means something might have gone wrong. Set bit to indicate which order had a problem
-            if status:
-                status_all = status_all | 1 << i
-
-            # TODO: Print this to UI
-            print("status, order_id: ", status, ",", str(info_dict))
-
-
-# Progress messages subscription and print()
-def print_progress(msg: str):
-    print("Progress Message:", msg)
-
-
-pub.subscribe(print_progress, EventTopic.PROGRESS)
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()

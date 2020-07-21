@@ -6,7 +6,9 @@ Created on Jul 17, 2020
 @author: boscolau
 """
 
-import time
+import logging
+from pubsub import pub
+from constants import EventTopic
 from selenium import webdriver
 from webdriver_manager.chrome import ChromeDriverManager
 from selenium.webdriver.chrome.options import Options
@@ -32,6 +34,13 @@ def get_active_events(organizer_url: str, headless=True) -> list:
         event_list.append(an_event)
 
     return event_list
+
+
+def display_message(msg: str):
+    logger = logging.getLogger("EventTopic.DISPLAY_MESSAGE")
+    logger.info(msg)
+    pub.sendMessage(EventTopic.DISPLAY_MESSAGE, msg=msg)
+
 
 if __name__ == "__main__":
     events = get_active_events("https://giowoods.eventbrite.com", headless=True)
