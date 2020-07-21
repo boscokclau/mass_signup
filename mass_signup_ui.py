@@ -28,30 +28,34 @@ class OrderRunner(QtCore.QThread):
         self.ui = ui
 
     def run(self):
+        # logger
+        logger = logging.getLogger(__name__)
+
         # Subscribe to progress message
         pub.subscribe(self.process_progress_message, EventTopic.PROGRESS)
 
         event_url = self.ui.cboEventUrl.itemData(self.ui.cboEventUrl.currentIndex())['event_url']
-        print(event_url)
+        logger.debug(event_url)
         csv_path = self.ui.txtAttendeesFilePath.text()
         attendee_list_collection = mass_signup_lib.get_attendees_from_csv(csv_path,
                                                                           process_all_by=self.ui.process_all_by)
 
         status_all = 0
-        # TODO: Print this to UI
-        print("Processing {} order{}:".format(len(attendee_list_collection),
-                                              "" if len(attendee_list_collection) == 1 else "s"))
+
+        display_message(
+            f"Processing {len(attendee_list_collection)} order{'' if len(attendee_list_collection) == 1 else 's'}")
+
         for i, attendee_list in enumerate(attendee_list_collection):
-            # TODO: Print this to UI
-            print("Order:", i + 1)
+
+            display_message(f"Order: {i + 1}")
+
             status, info_dict = mass_signup.signup(attendee_list, self.ui.buyer, event_url, headless=self.ui.headless)
 
             # status != 0 means something might have gone wrong. Set bit to indicate which order had a problem
             if status:
                 status_all = status_all | 1 << i
 
-            # TODO: Print this to UI
-            print("status, order_id: ", status, ",", str(info_dict))
+            logger.debug(f"status, order_id: {status}, {info_dict}")
 
     def process_progress_message(self, msg: str):
         display_message(msg)
@@ -60,6 +64,8 @@ class OrderRunner(QtCore.QThread):
 class Ui(QtWidgets.QMainWindow):
     def __init__(self, org_url: str, buyer_file_path: str, headless: bool = True, process_all_by: int = GROUP_SIZE):
         super(Ui, self).__init__()
+
+        logger = logging.getLogger(__name__)
 
         self.org_url = org_url
         self.buyer_file_path = buyer_file_path
@@ -87,7 +93,6 @@ class Ui(QtWidgets.QMainWindow):
 
         with open(self.buyer_file_path, 'r') as f:
             buyer_firstname, buyer_lastname, buyer_email = next(csv.reader(f))
-            print(buyer_firstname, buyer_lastname, buyer_email)
 
         self.buyer = Buyer(buyer_firstname, buyer_lastname, buyer_email)
         self.lblBuyerName.setText(f"{self.buyer.first_name} {self.buyer.last_name}")
@@ -103,7 +108,6 @@ class Ui(QtWidgets.QMainWindow):
         self.btnPlaceOrder.clicked.connect(self.placeOrder)
 
         self.txtAttendeesFilePath.textChanged.connect(self.stateChangeBtnPlaceOrder)
-
 
     def openCsvSelectFileDialog(self):
         file_path = QFileDialog.getOpenFileName(self, "", USER_HOME_DIR, "CSV (*.csv)")
@@ -132,7 +136,8 @@ if __name__ == "__main__":
 
     # Log settings
     logging.config.dictConfig(yaml.safe_load(open('ui_logging.conf', 'r')))
-    logger = logging.getLogger(EventTopic.PROGRESS)
+    logger_progress = logging.getLogger(EventTopic.PROGRESS)
+    logger_self = logging.getLogger(__name__)
 
     app = QtWidgets.QApplication(sys.argv)
 
