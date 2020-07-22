@@ -115,6 +115,11 @@ class Ui(QtWidgets.QMainWindow):
         pub.subscribe(self.process_message_event, EventTopic.PROGRESS)
         pub.subscribe(self.process_message_event, EventTopic.DISPLAY_MESSAGE)
 
+    """ ----------------------
+        Slots
+        ----------------------
+    """
+
     def openCsvSelectFileDialog(self):
         file_path = QFileDialog.getOpenFileName(self, "", USER_HOME_DIR, "CSV (*.csv)")
         self.txtAttendeesFilePath.setText(file_path[0])
@@ -122,15 +127,20 @@ class Ui(QtWidgets.QMainWindow):
     def stateChangeBtnPlaceOrder(self):
         self.btnPlaceOrder.setEnabled(True if len(self.txtAttendeesFilePath.text()) else False)
 
-    def process_message_event(self, msg: str):
-        self.message_update.message_received.emit(msg)
-
     def updateProgressDialog(self, msg: str):
         self.txtProgressMessage.textCursor().insertText(msg + "\n")
 
     def placeOrder(self):
         self.order_runner = OrderRunner(self)
         self.order_runner.start()
+
+    """ ----------------------
+        Event processors
+        ----------------------
+    """
+
+    def process_message_event(self, msg: str):
+        self.message_update.message_received.emit(msg)
 
 
 if __name__ == "__main__":
