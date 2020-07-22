@@ -7,6 +7,7 @@ from pubsub import pub
 from pathlib import Path
 from PyQt5 import QtWidgets, QtCore, uic
 from PyQt5.QtWidgets import QFileDialog
+from PyQt5.QtCore import pyqtSignal, QObject
 
 import mass_signup_lib
 import mass_signup
@@ -22,6 +23,10 @@ DEFAULT_ORG_URL = "https://mountvirgin.eventbrite.com"
 BUYER_FILE_PATH = "buyer_olmv.csv"
 
 
+class Message_Update(QObject):
+    message_received = pyqtSignal(str)
+
+
 class OrderRunner(QtCore.QThread):
     def __init__(self, ui, parent=None):
         super(OrderRunner, self).__init__(parent)
@@ -30,9 +35,6 @@ class OrderRunner(QtCore.QThread):
     def run(self):
         # logger
         logger = logging.getLogger(__name__)
-
-        # Subscribe to progress message
-        pub.subscribe(self.process_progress_message, EventTopic.PROGRESS)
 
         event_url = self.ui.cboEventUrl.itemData(self.ui.cboEventUrl.currentIndex())['event_url']
         logger.debug(event_url)
@@ -57,9 +59,6 @@ class OrderRunner(QtCore.QThread):
 
             logger.debug(f"status, order_id: {status}, {info_dict}")
 
-    def process_progress_message(self, msg: str):
-        display_message(msg)
-
 
 class Ui(QtWidgets.QMainWindow):
     def __init__(self, org_url: str, buyer_file_path: str, headless: bool = True, process_all_by: int = GROUP_SIZE):
@@ -72,6 +71,9 @@ class Ui(QtWidgets.QMainWindow):
         self.headless = headless
         self.process_all_by = process_all_by
 
+        # Order runner
+        self.order_runner = None
+
         # Load UI file
         uic.loadUi("mass_signup.ui", self)
 
@@ -81,9 +83,6 @@ class Ui(QtWidgets.QMainWindow):
         self.btnLoadAttendees = self.findChild(QtWidgets.QPushButton, 'btnLoadAttendees')
         self.btnPlaceOrder = self.findChild(QtWidgets.QPushButton, 'btnPlaceOrder')
         self.txtProgressMessage = self.findChild(QtWidgets.QPlainTextEdit, 'txtProgressMessage')
-
-        # Subscribe to display_message event
-        pub.subscribe(self.updateProgressDialog, EventTopic.DISPLAY_MESSAGE)
 
         # Load initial data
         # Buyer
@@ -107,7 +106,14 @@ class Ui(QtWidgets.QMainWindow):
         self.btnLoadAttendees.clicked.connect(self.openCsvSelectFileDialog)
         self.btnPlaceOrder.clicked.connect(self.placeOrder)
 
+        self.message_update = Message_Update()
+        self.message_update.message_received.connect(self.updateProgressDialog)
+
         self.txtAttendeesFilePath.textChanged.connect(self.stateChangeBtnPlaceOrder)
+
+        # Subscribe to display_message event
+        pub.subscribe(self.process_message_event, EventTopic.PROGRESS)
+        pub.subscribe(self.process_message_event, EventTopic.DISPLAY_MESSAGE)
 
     def openCsvSelectFileDialog(self):
         file_path = QFileDialog.getOpenFileName(self, "", USER_HOME_DIR, "CSV (*.csv)")
@@ -116,7 +122,10 @@ class Ui(QtWidgets.QMainWindow):
     def stateChangeBtnPlaceOrder(self):
         self.btnPlaceOrder.setEnabled(True if len(self.txtAttendeesFilePath.text()) else False)
 
-    def updateProgressDialog(self, msg):
+    def process_message_event(self, msg: str):
+        self.message_update.message_received.emit(msg)
+
+    def updateProgressDialog(self, msg: str):
         self.txtProgressMessage.textCursor().insertText(msg + "\n")
 
     def placeOrder(self):
