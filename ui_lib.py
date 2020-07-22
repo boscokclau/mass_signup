@@ -37,7 +37,7 @@ def get_active_events(organizer_url: str, headless=True) -> list:
 
 
 def display_message(msg: str):
-    logger = logging.getLogger("EventTopic.DISPLAY_MESSAGE")
+    logger = logging.getLogger(EventTopic.DISPLAY_MESSAGE)
     logger.info(msg)
     pub.sendMessage(EventTopic.DISPLAY_MESSAGE, msg=msg)
 

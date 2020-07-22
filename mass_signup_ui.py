@@ -158,6 +158,8 @@ if __name__ == "__main__":
     logger_progress = logging.getLogger(EventTopic.PROGRESS)
     logger_self = logging.getLogger(__name__)
 
+    logger_self.info("Logger self")
+
     app = QtWidgets.QApplication(sys.argv)
 
     org_url = args.url if args.url else DEFAULT_ORG_URL

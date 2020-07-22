@@ -48,6 +48,6 @@ def get_attendees_from_csv(csv_path: str, process_all_by: int = 0) -> list:
 
 
 def send_progress(msg:str):
-    logger = logging.getLogger("EventTopic.PROGRESS")
+    logger = logging.getLogger(EventTopic.PROGRESS)
     logger.info(msg)
     pub.sendMessage(EventTopic.PROGRESS, msg=msg)
