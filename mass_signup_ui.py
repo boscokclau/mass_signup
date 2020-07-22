@@ -1,4 +1,5 @@
 import argparse
+import os
 import sys
 import csv
 import logging.config
@@ -9,6 +10,7 @@ from PyQt5 import QtWidgets, QtCore, uic
 from PyQt5.QtWidgets import QFileDialog
 from PyQt5.QtCore import pyqtSignal, QObject
 
+import constants
 import mass_signup_lib
 import mass_signup
 import ui_lib
@@ -22,6 +24,10 @@ GROUP_SIZE = 10
 DEFAULT_ORG_URL = "https://mountvirgin.eventbrite.com"
 BUYER_FILE_PATH = "buyer_olmv.csv"
 
+# Log settings
+logging.config.dictConfig(yaml.safe_load(open('ui_logging.conf', 'r')))
+logger_progress = logging.getLogger(EventTopic.PROGRESS)
+logger = logging.getLogger(os.path.basename(__file__))
 
 class Message_Update(QObject):
     message_received = pyqtSignal(str)
@@ -33,11 +39,9 @@ class OrderRunner(QtCore.QThread):
         self.ui = ui
 
     def run(self):
-        # logger
-        logger = logging.getLogger(__name__)
-
         event_url = self.ui.cboEventUrl.itemData(self.ui.cboEventUrl.currentIndex())['event_url']
-        logger.debug(event_url)
+        logger.debug(f"Event URL: {event_url}")
+
         csv_path = self.ui.txtAttendeesFilePath.text()
         attendee_list_collection = mass_signup_lib.get_attendees_from_csv(csv_path,
                                                                           process_all_by=self.ui.process_all_by)
@@ -63,8 +67,6 @@ class OrderRunner(QtCore.QThread):
 class Ui(QtWidgets.QMainWindow):
     def __init__(self, org_url: str, buyer_file_path: str, headless: bool = True, process_all_by: int = GROUP_SIZE):
         super(Ui, self).__init__()
-
-        logger = logging.getLogger(__name__)
 
         self.org_url = org_url
         self.buyer_file_path = buyer_file_path
@@ -150,15 +152,11 @@ if __name__ == "__main__":
     parser.add_argument('-a', '--all_by', dest='process_all_by', default=0, help='Process all attendees by group of')
     parser.add_argument('-u', '--url', dest='url', default=None, help='Eventbrite Organizer URL')
     parser.add_argument('-b', '--buyer', dest='buyer', default=None, help='Buyer file path')
+    parser.add_argument('-l', '-loglevel', dest='log_level',
+                        choices=['critical', 'error', 'warning', 'info', 'debug'], default='warning',
+                        help=argparse.SUPPRESS)
 
     args = parser.parse_args()
-
-    # Log settings
-    logging.config.dictConfig(yaml.safe_load(open('ui_logging.conf', 'r')))
-    logger_progress = logging.getLogger(EventTopic.PROGRESS)
-    logger_self = logging.getLogger(__name__)
-
-    logger_self.info("Logger self")
 
     app = QtWidgets.QApplication(sys.argv)
 
@@ -166,6 +164,9 @@ if __name__ == "__main__":
     headless = not args.gui_on if args.gui_on else True
     process_all_by = args.process_all_by if args.process_all_by else GROUP_SIZE
     buyer_file_path = args.buyer if args.buyer else BUYER_FILE_PATH
+
+    log_level = constants.log_levels[args.log_level]
+    logger.setLevel(log_level)
 
     window = Ui(org_url, buyer_file_path, headless=headless, process_all_by=process_all_by)
     window.show()
