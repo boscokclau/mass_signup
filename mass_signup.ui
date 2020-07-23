@@ -177,5 +177,21 @@
     </hint>
    </hints>
   </connection>
+  <connection>
+   <sender>btnPlaceOrder</sender>
+   <signal>clicked()</signal>
+   <receiver>txtProgressMessage</receiver>
+   <slot>clear()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>616</x>
+     <y>176</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>360</x>
+     <y>422</y>
+    </hint>
+   </hints>
+  </connection>
  </connections>
 </ui>
