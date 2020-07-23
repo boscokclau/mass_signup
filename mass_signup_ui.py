@@ -151,6 +151,7 @@ class Ui(QtWidgets.QMainWindow):
 
     def update_progress_dialog(self, msg: str):
         self.txtProgressMessage.textCursor().insertText(msg + "\n")
+        self.txtProgressMessage.ensureCursorVisible()
 
     def process_order_state_change(self, state: Order_State):
         if state == Order_State.COMPLETED:
