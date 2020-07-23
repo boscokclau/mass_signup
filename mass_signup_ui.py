@@ -117,14 +117,14 @@ class Ui(QtWidgets.QMainWindow):
             self.cboEventUrl.addItem(event['event_name'], event)
 
         # Custom connects
-        self.btnLoadAttendees.clicked.connect(self.openCsvSelectFileDialog)
-        self.btnPlaceOrder.clicked.connect(self.placeOrder)
+        self.btnLoadAttendees.clicked.connect(self.open_csv_select_file_dialog)
+        self.btnPlaceOrder.clicked.connect(self.place_order)
 
         self.ui_signal = UI_Signal()
-        self.ui_signal.message_received.connect(self.updateProgressDialog)
+        self.ui_signal.message_received.connect(self.update_progress_dialog)
         self.ui_signal.order_state_changed.connect(self.process_order_state_change)
 
-        self.txtAttendeesFilePath.textChanged.connect(self.stateChangeBtnPlaceOrder)
+        self.txtAttendeesFilePath.textChanged.connect(self.update_with_attendees_file_path_changed)
 
         # Subscribe to display_message event
         pub.subscribe(self.process_message_event, EventTopic.PROGRESS)
@@ -135,17 +135,17 @@ class Ui(QtWidgets.QMainWindow):
         ----------------------
     """
 
-    def openCsvSelectFileDialog(self):
+    def open_csv_select_file_dialog(self):
         file_path = QFileDialog.getOpenFileName(self, "", USER_HOME_DIR, "CSV (*.csv)")
         self.txtAttendeesFilePath.setText(file_path[0])
 
-    def stateChangeBtnPlaceOrder(self):
+    def update_with_attendees_file_path_changed(self):
         if len(self.txtAttendeesFilePath.text()):
             self.ui_signal.order_state_changed.emit(Order_State.READY)
         else:
             self.ui_signal.order_state_changed.emit(Order_State.NOT_READY)
 
-    def updateProgressDialog(self, msg: str):
+    def update_progress_dialog(self, msg: str):
         self.txtProgressMessage.textCursor().insertText(msg + "\n")
 
     def process_order_state_change(self, state: Order_State):
@@ -179,7 +179,7 @@ class Ui(QtWidgets.QMainWindow):
 
         self.btnPlaceOrder.repaint()
 
-    def placeOrder(self):
+    def place_order(self):
         self.ui_signal.order_state_changed.emit(Order_State.IN_PROGRESS)
         self.order_runner = OrderRunner(self)
         self.order_runner.start()
