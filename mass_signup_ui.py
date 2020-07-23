@@ -124,6 +124,7 @@ class Ui(QtWidgets.QMainWindow):
         self.ui_signal.message_received.connect(self.update_progress_dialog)
         self.ui_signal.order_state_changed.connect(self.process_order_state_change)
 
+        self.cboEventUrl.currentIndexChanged.connect(self.update_with_event_selection_changed)
         self.txtAttendeesFilePath.textChanged.connect(self.update_with_attendees_file_path_changed)
 
         # Subscribe to display_message event
@@ -144,6 +145,9 @@ class Ui(QtWidgets.QMainWindow):
             self.ui_signal.order_state_changed.emit(Order_State.READY)
         else:
             self.ui_signal.order_state_changed.emit(Order_State.NOT_READY)
+
+    def update_with_event_selection_changed(self):
+        self.update_with_attendees_file_path_changed()
 
     def update_progress_dialog(self, msg: str):
         self.txtProgressMessage.textCursor().insertText(msg + "\n")
