@@ -1,22 +1,23 @@
 import argparse
-import os
-import sys
 import csv
 import logging.config
+import os
+import sys
 import yaml
-from pubsub import pub
-from pathlib import Path
-from PyQt5 import QtWidgets, QtCore, uic
+from enum import Enum
+from PyQt5 import QtCore, QtWidgets, uic
 from PyQt5.QtWidgets import QFileDialog
-from PyQt5.QtCore import pyqtSignal, QObject
+from PyQt5.QtCore import QObject, pyqtSignal
+from pathlib import Path
+from pubsub import pub
 
 import constants
 import mass_signup_lib
 import mass_signup
 import ui_lib
-from ui_lib import display_message
-from constants import EventTopic
 from buyer import Buyer
+from constants import EventTopic
+from ui_lib import display_message
 
 # Application settings
 USER_HOME_DIR = str(Path.home())
@@ -29,8 +30,17 @@ logging.config.dictConfig(yaml.safe_load(open('ui_logging.conf', 'r')))
 logger_progress = logging.getLogger(EventTopic.PROGRESS)
 logger = logging.getLogger(os.path.basename(__file__))
 
-class Message_Update(QObject):
+
+class Order_State(Enum):
+    READY = 0
+    IN_PROGRESS = 1
+    NOT_READY = 2
+    COMPLETED = 3
+
+
+class UI_Signal(QObject):
     message_received = pyqtSignal(str)
+    order_state_changed = pyqtSignal(Order_State)
 
 
 class OrderRunner(QtCore.QThread):
@@ -62,6 +72,8 @@ class OrderRunner(QtCore.QThread):
                 status_all = status_all | 1 << i
 
             logger.debug(f"status, order_id: {status}, {info_dict}")
+
+        self.ui.ui_signal.order_state_changed.emit(Order_State.COMPLETED)
 
 
 class Ui(QtWidgets.QMainWindow):
@@ -108,8 +120,9 @@ class Ui(QtWidgets.QMainWindow):
         self.btnLoadAttendees.clicked.connect(self.openCsvSelectFileDialog)
         self.btnPlaceOrder.clicked.connect(self.placeOrder)
 
-        self.message_update = Message_Update()
-        self.message_update.message_received.connect(self.updateProgressDialog)
+        self.ui_signal = UI_Signal()
+        self.ui_signal.message_received.connect(self.updateProgressDialog)
+        self.ui_signal.order_state_changed.connect(self.process_order_state_change)
 
         self.txtAttendeesFilePath.textChanged.connect(self.stateChangeBtnPlaceOrder)
 
@@ -127,12 +140,47 @@ class Ui(QtWidgets.QMainWindow):
         self.txtAttendeesFilePath.setText(file_path[0])
 
     def stateChangeBtnPlaceOrder(self):
-        self.btnPlaceOrder.setEnabled(True if len(self.txtAttendeesFilePath.text()) else False)
+        if len(self.txtAttendeesFilePath.text()):
+            self.ui_signal.order_state_changed.emit(Order_State.READY)
+        else:
+            self.ui_signal.order_state_changed.emit(Order_State.NOT_READY)
 
     def updateProgressDialog(self, msg: str):
         self.txtProgressMessage.textCursor().insertText(msg + "\n")
 
+    def process_order_state_change(self, state: Order_State):
+        if state == Order_State.COMPLETED:
+            self.cboEventUrl.setEnabled(True)
+            self.txtAttendeesFilePath.setEnabled(True)
+            self.btnLoadAttendees.setEnabled(True)
+            self.btnPlaceOrder.setText("Re-Order")
+            self.btnPlaceOrder.setEnabled(True)
+
+        elif state == Order_State.IN_PROGRESS:
+            self.cboEventUrl.setEnabled(False)
+            self.txtAttendeesFilePath.setEnabled(False)
+            self.btnLoadAttendees.setEnabled(False)
+            self.btnPlaceOrder.setText("In Progress")
+            self.btnPlaceOrder.setEnabled(False)
+
+        elif state == Order_State.READY:
+            self.cboEventUrl.setEnabled(True)
+            self.txtAttendeesFilePath.setEnabled(True)
+            self.btnLoadAttendees.setEnabled(True)
+            self.btnPlaceOrder.setText("Place Order")
+            self.btnPlaceOrder.setEnabled(True)
+
+        else:  # NOT_READY
+            self.cboEventUrl.setEnabled(True)
+            self.txtAttendeesFilePath.setEnabled(True)
+            self.btnLoadAttendees.setEnabled(True)
+            self.btnPlaceOrder.setText("Place Order")
+            self.btnPlaceOrder.setEnabled(False)
+
+        self.btnPlaceOrder.repaint()
+
     def placeOrder(self):
+        self.ui_signal.order_state_changed.emit(Order_State.IN_PROGRESS)
         self.order_runner = OrderRunner(self)
         self.order_runner.start()
 
@@ -142,7 +190,7 @@ class Ui(QtWidgets.QMainWindow):
     """
 
     def process_message_event(self, msg: str):
-        self.message_update.message_received.emit(msg)
+        self.ui_signal.message_received.emit(msg)
 
 
 if __name__ == "__main__":
