@@ -32,98 +32,147 @@
    <string>OLMV Mass Multi-attendee Registration</string>
   </property>
   <widget class="QWidget" name="centralwidget">
-   <widget class="QWidget" name="layoutWidget">
-    <property name="geometry">
-     <rect>
-      <x>30</x>
-      <y>10</y>
-      <width>664</width>
-      <height>157</height>
-     </rect>
-    </property>
-    <layout class="QGridLayout" name="gridLayout_2">
-     <item row="1" column="0">
-      <widget class="QFrame" name="frame">
-       <property name="frameShape">
-        <enum>QFrame::StyledPanel</enum>
-       </property>
-       <property name="frameShadow">
-        <enum>QFrame::Raised</enum>
-       </property>
-       <layout class="QGridLayout" name="gridLayout">
-        <item row="0" column="0">
-         <widget class="QLabel" name="lblEvent">
-          <property name="text">
-           <string>Event</string>
-          </property>
-          <property name="alignment">
-           <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-          </property>
-         </widget>
-        </item>
-        <item row="2" column="1">
-         <widget class="QLineEdit" name="txtAttendeesFilePath"/>
-        </item>
-        <item row="0" column="1" colspan="2">
-         <widget class="QComboBox" name="cboEventUrl"/>
-        </item>
-        <item row="3" column="2">
-         <widget class="QPushButton" name="btnPlaceOrder">
-          <property name="enabled">
-           <bool>false</bool>
-          </property>
-          <property name="text">
-           <string>Place Order</string>
-          </property>
-         </widget>
-        </item>
-        <item row="2" column="2">
-         <widget class="QPushButton" name="btnLoadAttendees">
-          <property name="text">
-           <string>Load Attendees</string>
-          </property>
-         </widget>
-        </item>
-        <item row="2" column="0">
-         <widget class="QLabel" name="lblLoadAttendees">
-          <property name="text">
-           <string>Attendees File</string>
-          </property>
-          <property name="alignment">
-           <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-          </property>
-         </widget>
-        </item>
-       </layout>
-      </widget>
-     </item>
-     <item row="0" column="0">
-      <widget class="QLabel" name="lblBuyerName">
-       <property name="font">
-        <font>
-         <pointsize>20</pointsize>
-         <weight>75</weight>
-         <bold>true</bold>
-        </font>
-       </property>
-       <property name="text">
-        <string>Buyer Name Place Holder</string>
-       </property>
-      </widget>
-     </item>
-    </layout>
-   </widget>
    <widget class="QPlainTextEdit" name="txtProgressMessage">
     <property name="geometry">
      <rect>
       <x>30</x>
       <y>190</y>
       <width>931</width>
-      <height>421</height>
+      <height>431</height>
      </rect>
     </property>
     <property name="readOnly">
      <bool>true</bool>
+    </property>
+   </widget>
+   <widget class="QPlainTextEdit" name="txtOrderSummary">
+    <property name="geometry">
+     <rect>
+      <x>599</x>
+      <y>52</y>
+      <width>361</width>
+      <height>121</height>
+     </rect>
+    </property>
+    <property name="readOnly">
+     <bool>true</bool>
+    </property>
+   </widget>
+   <widget class="QFrame" name="frame">
+    <property name="geometry">
+     <rect>
+      <x>32</x>
+      <y>52</y>
+      <width>551</width>
+      <height>121</height>
+     </rect>
+    </property>
+    <property name="frameShape">
+     <enum>QFrame::StyledPanel</enum>
+    </property>
+    <property name="frameShadow">
+     <enum>QFrame::Raised</enum>
+    </property>
+    <widget class="QLabel" name="lblEvent">
+     <property name="geometry">
+      <rect>
+       <x>13</x>
+       <y>15</y>
+       <width>91</width>
+       <height>16</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Event</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+     </property>
+    </widget>
+    <widget class="QLineEdit" name="txtAttendeesFilePath">
+     <property name="geometry">
+      <rect>
+       <x>110</x>
+       <y>47</y>
+       <width>281</width>
+       <height>21</height>
+      </rect>
+     </property>
+    </widget>
+    <widget class="QComboBox" name="cboEventUrl">
+     <property name="geometry">
+      <rect>
+       <x>107</x>
+       <y>11</y>
+       <width>421</width>
+       <height>26</height>
+      </rect>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="btnPlaceOrder">
+     <property name="enabled">
+      <bool>false</bool>
+     </property>
+     <property name="geometry">
+      <rect>
+       <x>400</x>
+       <y>80</y>
+       <width>131</width>
+       <height>32</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Place Order</string>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="btnLoadAttendees">
+     <property name="geometry">
+      <rect>
+       <x>400</x>
+       <y>45</y>
+       <width>131</width>
+       <height>32</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Load Attendees</string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="lblLoadAttendees">
+     <property name="geometry">
+      <rect>
+       <x>13</x>
+       <y>47</y>
+       <width>91</width>
+       <height>16</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Attendees File</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+     </property>
+    </widget>
+   </widget>
+   <widget class="QLabel" name="lblBuyerName">
+    <property name="geometry">
+     <rect>
+      <x>32</x>
+      <y>12</y>
+      <width>239</width>
+      <height>24</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <pointsize>20</pointsize>
+      <weight>75</weight>
+      <bold>true</bold>
+     </font>
+    </property>
+    <property name="text">
+     <string>Buyer Name Place Holder</string>
     </property>
    </widget>
   </widget>
@@ -202,6 +251,22 @@
     <hint type="destinationlabel">
      <x>360</x>
      <y>422</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>btnPlaceOrder</sender>
+   <signal>clicked()</signal>
+   <receiver>txtOrderSummary</receiver>
+   <slot>clear()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>497</x>
+     <y>169</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>779</x>
+     <y>134</y>
     </hint>
    </hints>
   </connection>

@@ -40,10 +40,13 @@ def get_active_events(organizer_url: str, headless=True) -> list:
     return event_list
 
 
-def display_message(msg: str):
-    logger = logging.getLogger(EventTopic.DISPLAY_MESSAGE)
+def display_progress_message(msg: str):
+    logger = logging.getLogger(EventTopic.DISPLAY_PROGRESS_MESSAGE)
     logger.info(msg)
-    pub.sendMessage(EventTopic.DISPLAY_MESSAGE, msg=msg)
+    pub.sendMessage(EventTopic.DISPLAY_PROGRESS_MESSAGE, msg=msg)
+
+def process_order_summary(info_dict: dict):
+    pub.sendMessage(EventTopic.DISPLAY_ORDER_SUMMARY, info_dict=info_dict)
 
 
 if __name__ == "__main__":

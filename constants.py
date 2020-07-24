@@ -12,7 +12,8 @@ class RegistrationStatus(Enum):
 
 class EventTopic:
     PROGRESS = "progress"
-    DISPLAY_MESSAGE = "display_message"
+    DISPLAY_PROGRESS_MESSAGE = "display_progress_message"
+    DISPLAY_ORDER_SUMMARY = "display_order_summary"
 
 
 log_levels = {

@@ -16,8 +16,8 @@ import mass_signup_lib
 import mass_signup
 import ui_lib
 from buyer import Buyer
-from constants import EventTopic
-from ui_lib import display_message
+from constants import EventTopic, RegistrationStatus
+from ui_lib import display_progress_message
 
 # Application settings
 USER_HOME_DIR = str(Path.home())
@@ -38,9 +38,32 @@ class Order_State(Enum):
     COMPLETED = 3
 
 
+class Order_Summary:
+    def __init__(self, seq_id: int, registration_status: RegistrationStatus, info_dict: dict = dict()):
+        self.seq_id = seq_id
+        self.reg_status = registration_status
+        self.info_dict = info_dict
+
+    def __str__(self):
+        if self.reg_status == RegistrationStatus.COMPLETED:
+            return f"Order {self.seq_id:2d}: Order Number {self.info_dict['order_id']}"
+
+        elif self.reg_status == RegistrationStatus.SALES_ENDED:
+            return f"Order {self.seq_id:2d}: Sales Ended--No registration processed"
+
+        elif self.reg_status == RegistrationStatus.SOLD_OUT:
+            return f"Order {self.seq_id:2d}: Sold Out--No registration processed"
+
+        elif self.reg_status == RegistrationStatus.NOT_ENOUGH_SEATS:
+            return f"Order {self.seq_id:2d}: Not Enough Seats--Only {self.info_dict['remaining']} remained"
+        else:
+            return f"Order {self.seq_id:2d}: Error Occurred--No registration processed"
+
+
 class UI_Signal(QObject):
-    message_received = pyqtSignal(str)
+    progress_message_received = pyqtSignal(str)
     order_state_changed = pyqtSignal(Order_State)
+    order_summary_available = pyqtSignal(Order_Summary)
 
 
 class OrderRunner(QtCore.QThread):
@@ -58,20 +81,21 @@ class OrderRunner(QtCore.QThread):
 
         status_all = 0
 
-        display_message(
+        display_progress_message(
             f"Processing {len(attendee_list_collection)} order{'' if len(attendee_list_collection) == 1 else 's'}")
 
         for i, attendee_list in enumerate(attendee_list_collection):
 
-            display_message(f"Order: {i + 1}")
+            display_progress_message(f"Order: {i + 1}")
 
             status, info_dict = mass_signup.signup(attendee_list, self.ui.buyer, event_url, headless=self.ui.headless)
 
             # status != 0 means something might have gone wrong. Set bit to indicate which order had a problem
-            if status:
+            if status != RegistrationStatus.COMPLETED:
                 status_all = status_all | 1 << i
 
             logger.debug(f"status, order_id: {status}, {info_dict}")
+            self.ui.ui_signal.order_summary_available.emit(Order_Summary(i + 1, status, info_dict))
 
         self.ui.ui_signal.order_state_changed.emit(Order_State.COMPLETED)
 
@@ -96,6 +120,7 @@ class Ui(QtWidgets.QMainWindow):
         self.txtAttendeesFilePath = self.findChild(QtWidgets.QLineEdit, 'txtAttendeesFilePath')
         self.btnLoadAttendees = self.findChild(QtWidgets.QPushButton, 'btnLoadAttendees')
         self.btnPlaceOrder = self.findChild(QtWidgets.QPushButton, 'btnPlaceOrder')
+        self.txtOrderSummary = self.findChild(QtWidgets.QPlainTextEdit, 'txtOrderSummary')
         self.txtProgressMessage = self.findChild(QtWidgets.QPlainTextEdit, 'txtProgressMessage')
 
         # Load initial data
@@ -121,15 +146,17 @@ class Ui(QtWidgets.QMainWindow):
         self.btnPlaceOrder.clicked.connect(self.place_order)
 
         self.ui_signal = UI_Signal()
-        self.ui_signal.message_received.connect(self.update_progress_dialog)
+        self.ui_signal.progress_message_received.connect(self.update_progress_message)
         self.ui_signal.order_state_changed.connect(self.process_order_state_change)
+        self.ui_signal.order_summary_available.connect(self.update_order_summary)
 
         self.cboEventUrl.currentIndexChanged.connect(self.update_with_event_selection_changed)
         self.txtAttendeesFilePath.textChanged.connect(self.update_with_attendees_file_path_changed)
 
-        # Subscribe to display_message event
+        # Subscribe to display_progress_message event
         pub.subscribe(self.process_message_event, EventTopic.PROGRESS)
-        pub.subscribe(self.process_message_event, EventTopic.DISPLAY_MESSAGE)
+        pub.subscribe(self.process_message_event, EventTopic.DISPLAY_PROGRESS_MESSAGE)
+        pub.subscribe(self.process_order_summary_event, EventTopic.DISPLAY_ORDER_SUMMARY)
 
     """ ----------------------
         Slots
@@ -149,9 +176,13 @@ class Ui(QtWidgets.QMainWindow):
     def update_with_event_selection_changed(self):
         self.update_with_attendees_file_path_changed()
 
-    def update_progress_dialog(self, msg: str):
+    def update_progress_message(self, msg: str):
         self.txtProgressMessage.textCursor().insertText(msg + "\n")
         self.txtProgressMessage.ensureCursorVisible()
+
+    def update_order_summary(self, order_summary: Order_Summary):
+        self.txtOrderSummary.textCursor().insertText(str(order_summary) + "\n")
+        self.txtOrderSummary.ensureCursorVisible()
 
     def process_order_state_change(self, state: Order_State):
         if state == Order_State.COMPLETED:
@@ -195,7 +226,10 @@ class Ui(QtWidgets.QMainWindow):
     """
 
     def process_message_event(self, msg: str):
-        self.ui_signal.message_received.emit(msg)
+        self.ui_signal.progress_message_received.emit(msg)
+
+    def process_order_summary_event(self, info_dict: dict):
+        self.ui_signal.order_summary_available(info_dict)
 
 
 if __name__ == "__main__":
