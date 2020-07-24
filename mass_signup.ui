@@ -98,6 +98,15 @@
        <height>21</height>
       </rect>
      </property>
+     <property name="text">
+      <string/>
+     </property>
+     <property name="readOnly">
+      <bool>true</bool>
+     </property>
+     <property name="placeholderText">
+      <string>Click Load Attendee Button to load file</string>
+     </property>
     </widget>
     <widget class="QComboBox" name="cboEventUrl">
      <property name="geometry">
