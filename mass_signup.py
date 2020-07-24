@@ -59,8 +59,8 @@ def signup(attendee_list: list, buyer: Buyer, url: str, headless: bool = False) 
             driver = webdriver.Chrome(ChromeDriverManager().install(), chrome_options=options)
 
         driver.implicitly_wait(WAIT_MS)
-        # Go to event registration main page and click "Register" to start
 
+        # Go to event registration main page and click "Register" to start
         event_id = url.split('-')[-1]
 
         send_progress("Opening: " + url)
@@ -213,7 +213,7 @@ def signup(attendee_list: list, buyer: Buyer, url: str, headless: bool = False) 
     except BaseException as e:
         send_progress(
             f"Unexpected error has occurred. Check email or contact organizer to confirm registration.\n {repr(e)}")
-        return RegistrationStatus.UNEXPECTED_ERROR
+        return RegistrationStatus.UNEXPECTED_ERROR, {"error": repr(e)}
     finally:
         driver.quit()
 
