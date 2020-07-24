@@ -7,6 +7,7 @@ class RegistrationStatus(Enum):
     SALES_ENDED = 1
     SOLD_OUT = 2
     NOT_ENOUGH_SEATS = 3
+    UNEXPECTED_ERROR = 4
 
 
 class EventTopic:
