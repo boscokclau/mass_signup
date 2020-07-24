@@ -15,23 +15,27 @@ from selenium.webdriver.chrome.options import Options
 
 
 def get_active_events(organizer_url: str, headless=True) -> list:
-    options = Options()
-    options.headless = headless
-    driver = webdriver.Chrome(ChromeDriverManager().install(), chrome_options=options)
-    driver.get(organizer_url)
-
-    event_divs = driver.find_elements_by_xpath("//article[@id='live_events']/div[contains(@class,'list-card-v2')]")
-
     event_list = list()
-    for event_div in event_divs:
-        event_name = event_div.get_attribute('data-share-name')
-        event_a = event_div.find_element_by_xpath("./a")
-        event_url = event_a.get_attribute('href')
 
-        an_event = dict()
-        an_event['event_name'] = event_name
-        an_event['event_url'] = event_url
-        event_list.append(an_event)
+    try:
+        options = Options()
+        options.headless = headless
+        driver = webdriver.Chrome(ChromeDriverManager().install(), chrome_options=options)
+        driver.get(organizer_url)
+
+        event_divs = driver.find_elements_by_xpath("//article[@id='live_events']/div[contains(@class,'list-card-v2')]")
+
+        for event_div in event_divs:
+            event_name = event_div.get_attribute('data-share-name')
+            event_a = event_div.find_element_by_xpath("./a")
+            event_url = event_a.get_attribute('href')
+
+            an_event = dict()
+            an_event['event_name'] = event_name
+            an_event['event_url'] = event_url
+            event_list.append(an_event)
+    finally:
+        driver.quit()
 
     return event_list
 
