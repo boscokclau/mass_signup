@@ -1,4 +1,5 @@
 __pycache__
+dist
 build
 *.sh
 .DS_Store
