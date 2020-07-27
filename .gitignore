@@ -5,4 +5,5 @@ build
 .DS_Store
 .idea
 *.spec
+setup.py
 20200725Sat.csv
