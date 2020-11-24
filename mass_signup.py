@@ -85,14 +85,16 @@ def signup(attendee_list: list, buyer: Buyer, url: str, headless: bool = False) 
         time.sleep(WAIT_MS / 1000)
 
         register_button = driver.find_element_by_css_selector('.eds-btn')
-
+        print("reg button", register_button)
+        time.sleep(WAIT_MS / 500)
         # Sold out, Button is Detail to waiting list registration
-        if register_button.text != 'Register':
-            send_progress("Sold out. No registration has been processed")
-            return RegistrationStatus.SOLD_OUT, dict()
+        #if register_button.text != 'Register':
+        #    send_progress("Line 91. Registration Button not detected. Sold out. No registration has been processed")
+        #    return RegistrationStatus.SOLD_OUT, dict()
 
         # Check if enough ticket for request
         send_progress("Checking for ticket availability for request...")
+        time.sleep(WAIT_MS / 333)
         remaining_ticket_text = driver.find_element_by_xpath("//span[@data-spec='remaining-tickets']")
         remaining_ticket = int(remaining_ticket_text.text.split()[0])
 
@@ -144,7 +146,7 @@ def signup(attendee_list: list, buyer: Buyer, url: str, headless: bool = False) 
         for i, cur_attendee in enumerate(attendee_list):
             ticket_id = div_attendee_surveys[i].get_attribute('id')
 
-            send_progress(f"\tAttendee: {i + 1:2d} -- {cur_attendee}")
+            send_progress(f"\tAttendee: {i + 1:2d} -- \n\t{cur_attendee}")
 
             driver.find_element_by_id(ticket_id + '.N-first_name').click()
             driver.find_element_by_id(ticket_id + '.N-first_name').send_keys(cur_attendee.first_name)
