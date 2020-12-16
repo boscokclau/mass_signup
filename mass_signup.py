@@ -79,6 +79,7 @@ def signup(attendee_list: list, buyer: Buyer, url: str, headless: bool = False) 
         register_button.click()
 
         # Select number of tickets
+        time.sleep(WAIT_MS / 500)
         driver.switch_to.frame(0)
 
         # Just sleep -- this is just a convenience script. Does not work the complexity to use explicit wait
@@ -94,7 +95,7 @@ def signup(attendee_list: list, buyer: Buyer, url: str, headless: bool = False) 
 
         # Check if enough ticket for request
         send_progress("Checking for ticket availability for request...")
-        time.sleep(WAIT_MS / 333)
+        time.sleep(WAIT_MS / 200)
         remaining_ticket_text = driver.find_element_by_xpath("//span[@data-spec='remaining-tickets']")
         remaining_ticket = int(remaining_ticket_text.text.split()[0])
 
